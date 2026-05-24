@@ -38,4 +38,4 @@ Compress-Archive -Path (Join-Path $Stage '*') -DestinationPath $ZipPath -Force
 Remove-Item $Stage -Recurse -Force
 
 Write-Host "Created: $ZipPath" -ForegroundColor Green
-Write-Host "Send this zip to company IT with COMPANY-HANDOFF.md instructions."
+Write-Host "Send this zip to company IT with RENDER.md instructions."

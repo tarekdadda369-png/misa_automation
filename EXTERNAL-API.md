@@ -1,36 +1,21 @@
-# Connect your company's dashboard to the automation runner
+# External API (company dashboard)
 
-Your team keeps **their own UI**. The **company’s server** runs the automation engine (Playwright + AI). This must **not** run on a developer’s laptop that gets turned off.
+Your dashboard calls the automation runner over HTTPS. You do not need `index.html`.
 
-They do **not** need `index.html`.
-
-**IT install:** [COMPANY-HANDOFF.md](./COMPANY-HANDOFF.md)
+**IT deploy:** [RENDER.md](./RENDER.md)
 
 ---
 
 ## Architecture
 
 ```
-[Company dashboard]  --HTTPS-->  [Company runner server :3050]  --headed-->  [MISA website]
-        |                                    |
-        | POST /api/v1/runs                  | Playwright + OpenAI (.env on company server)
-        | GET  /api/v1/runs/:id               |
-        | POST /api/otp                       |
+[Your dashboard]  --HTTPS-->  [Runner :3050]  --headless-->  [MISA site]
+       | POST /api/v1/runs
+       | GET  /api/v1/runs/:id
+       | POST /api/otp
 ```
 
----
-
-## Setup (company IT — once)
-
-1. Install on **always-on Windows Server** (see [COMPANY-HANDOFF.md](./COMPANY-HANDOFF.md)).
-2. Give developers:
-   - **Base URL** — e.g. `https://automation.company.com`
-   - **API key** — from `server-config.json` → field `apiKey`
-3. **OpenAI** key in `.env` on **that server** (company billing).
-
-```powershell
-pm2 restart misa-dashboard
-```
+IT gives you **base URL** + **API key** (`server-config.json` on the server).
 
 ---
 
