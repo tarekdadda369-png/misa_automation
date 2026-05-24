@@ -1,0 +1,19 @@
+services:
+  misa-runner:
+    build: .
+    ports:
+      - "3050:3050"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PRODUCTION_MODE: "1"
+      PLAYWRIGHT_HEADLESS: "1"
+      MAX_CONCURRENT_RUNS: "3"
+      PORT: "3050"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+      # After first run: docker cp misa-runner:/app/server-config.json ./server-config.json
+    restart: unless-stopped
+    shm_size: "2gb"

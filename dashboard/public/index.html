@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register MISA Playwright Dashboard</title>
+  <style>
+    body {font-family: Arial, sans-serif; margin: 2rem; background: #f5f5f5;}
+    .container {max-width: 600px; margin: auto; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,.1);}
+    h1 {text-align: center; margin-bottom: 1rem;}
+    label {display:block; margin-top: .8rem;}
+    input, textarea {width:100%; padding:.5rem; margin-top:.3rem; border:1px solid #ccc; border-radius:4px;}
+    button {margin-top:1.5rem; padding:.7rem 1.2rem; background:#0066cc; color:#fff; border:none; border-radius:4px; cursor:pointer;}
+    button:hover {background:#004999;}
+    .log {margin-top:1rem; white-space:pre-wrap; background:#eee; padding:.8rem; border-radius:4px; max-height:200px; overflow:auto;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Register MISA Dashboard</h1>
+    <form id="runForm">
+      <label>Email (target):
+        <input type="email" name="email" required />
+      </label>
+      <label>ISIC Codes (comma separated):
+        <input type="text" name="isicCodes" placeholder="C251114,A011103" required />
+      </label>
+      <label>Country:
+        <input type="text" name="country" placeholder="Albania" required />
+      </label>
+      <label>Mobile Prefix (e.g., +355):
+        <input type="text" name="mobilePrefix" required />
+      </label>
+      <button type="submit">Run Registration</button>
+    </form>
+    <div id="output" class="log"></div>
+  </div>
+  <script>
+    const form = document.getElementById('runForm');
+    const output = document.getElementById('output');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      output.textContent = 'Running...';
+      const data = Object.fromEntries(new FormData(form));
+      try {
+        const res = await fetch('/run', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (res.ok) {
+          output.textContent = `Exit code: ${result.exitCode}\n\n${result.log}`;
+        } else {
+          output.textContent = `Error: ${result.error}`;
+        }
+      } catch (err) {
+        output.textContent = 'Network error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

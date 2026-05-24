@@ -15,15 +15,21 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test tests/misa.spec.js",
+    "test:headed": "playwright test tests/misa.spec.js --headed",
+    "dashboard": "node server.js",
+    "dashboard:pm2": "pm2 start ecosystem.config.js"
   },
   "devDependencies": {
     "@playwright/test": "1.61.0-alpha-1778188671000",
     "@types/node": "^25.2.1"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "playwright": "1.61.0-alpha-1778188671000",
-    "playwright-core": "1.61.0-alpha-1778188671000"
+    "playwright-core": "1.61.0-alpha-1778188671000",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   },
   "bin": {
     "playwright-cli": "playwright-cli.js"

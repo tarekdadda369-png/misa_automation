@@ -2,5 +2,19 @@ node_modules/
 .vscode/
 /test-results/
 /.playwright-cli/
+logs/
+uploads/
+.env
+.env.local
+config.json
+server-config.json
+otp_session.json
+otp_session_*.json
+ai_fallback_queue.jsonl
+dist/
+scratch/
+debug-*.js
+dummy.pdf
+config_*.json
 # Ignore self-skill which is a build artifact
 .claude/skills/playwright-cli/

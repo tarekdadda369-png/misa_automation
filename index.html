@@ -1,0 +1,3267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MISA Saudi Automation Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at 50% 50%, #0d0f1e 0%, #05060b 100%);
+            --panel-bg: rgba(13, 16, 30, 0.6);
+            --border-glow: rgba(139, 92, 246, 0.25);
+            --primary-glow: #8b5cf6;
+            --secondary-glow: #06b6d4;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.1) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            background: linear-gradient(90deg, #a78bfa 0%, #22d3ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            text-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        main {
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 40px 80px;
+            display: grid;
+            grid-template-columns: 1.25fr 1fr;
+            gap: 40px;
+            flex-grow: 1;
+        }
+
+        @media (max-width: 1280px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            padding: 35px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .panel:hover {
+            border-color: rgba(6, 182, 212, 0.35);
+            box-shadow: 0 20px 50px rgba(6, 182, 212, 0.05);
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            border-left: 4px solid var(--secondary-glow);
+            padding-left: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transition: background 0.2s ease;
+        }
+
+        .section-card:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-grid-three {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid, .form-grid-three {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .phone-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .phone-group select {
+            width: 120px;
+            flex-shrink: 0;
+        }
+
+        .phone-group .custom-select-container {
+            width: 160px;
+            flex-shrink: 0;
+        }
+
+        .phone-group .custom-dropdown-panel {
+            min-width: 250px;
+        }
+
+        .phone-group input {
+            flex-grow: 1;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .required-asterisk {
+            color: #ef4444;
+            margin-left: 4px;
+            font-weight: bold;
+        }
+
+        /* Custom Premium Searchable Dropdown Selector */
+        .custom-select-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-select-trigger {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .custom-select-container.open .custom-select-trigger,
+        .custom-select-trigger:hover {
+            border-color: var(--secondary-glow);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .custom-select-trigger .chevron {
+            transition: transform 0.2s ease;
+            color: var(--text-muted);
+        }
+
+        .custom-select-container.open .chevron {
+            transform: rotate(180deg);
+            color: var(--secondary-glow);
+        }
+
+        .custom-dropdown-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.98);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(6, 182, 212, 0.1);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .custom-select-container.open .custom-dropdown-panel {
+            display: flex;
+        }
+
+        .custom-dropdown-search {
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 0 !important;
+            padding: 12px 16px !important;
+            font-size: 0.9rem !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            color: #fff !important;
+        }
+
+        .custom-dropdown-search:focus {
+            box-shadow: none !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            border-bottom-color: var(--secondary-glow) !important;
+        }
+
+        .custom-dropdown-options {
+            max-height: 240px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Customize scrollbar */
+        .custom-dropdown-options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-dropdown-options::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-dropdown-options::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+        }
+
+        .custom-dropdown-options::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-glow);
+        }
+
+        .custom-dropdown-option {
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .custom-dropdown-option:hover {
+            background: rgba(6, 182, 212, 0.15);
+            color: #fff;
+            padding-left: 20px;
+        }
+
+        .custom-dropdown-option.selected {
+            background: linear-gradient(90deg, rgba(124, 58, 237, 0.3) 0%, rgba(8, 145, 178, 0.3) 100%);
+            color: var(--secondary-glow);
+            font-weight: 600;
+        }
+
+
+        input, select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary-glow);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* File Upload Styling */
+        .file-upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .file-upload-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .file-upload-box:hover {
+            border-color: var(--secondary-glow);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .file-upload-box input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            transition: color 0.2s ease;
+        }
+
+        .file-upload-box:hover .upload-icon {
+            color: var(--secondary-glow);
+        }
+
+        .file-status {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            word-break: break-all;
+        }
+
+        .file-status.selected {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        /* Shareholders Configuration */
+        .shareholder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-sh-btn {
+            background: linear-gradient(90deg, #7c3aed 0%, #0891b2 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .add-sh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .shareholder-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .shareholder-card {
+            background: rgba(139, 92, 246, 0.03);
+            border: 1px dashed rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .remove-sh-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--error-color);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .remove-sh-btn:hover {
+            background: var(--error-color);
+            color: #fff;
+        }
+
+        .sh-index {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-glow);
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        /* ── Shareholder type toggle tabs ────────────────────────────────── */
+        .sh-type-tabs {
+            display: flex;
+            gap: 0;
+            border: 1px solid rgba(139,92,246,0.35);
+            border-radius: 10px;
+            overflow: hidden;
+            width: fit-content;
+            margin-bottom: 18px;
+        }
+        .sh-type-btn {
+            padding: 7px 22px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .sh-type-btn.active {
+            background: var(--primary-glow);
+            color: #fff;
+        }
+        .sh-type-btn:hover:not(.active) {
+            background: rgba(139,92,246,0.12);
+            color: var(--text-primary);
+        }
+        .sh-org-section, .sh-person-section { display: none; }
+        .sh-org-section.visible, .sh-person-section.visible { display: contents; }
+        /* date triplet group inside person section */
+        .sh-date-group { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: end; }
+        .sh-date-group label { grid-column: 1 / -1; margin-bottom: 0; font-size: 0.82rem; color: var(--text-secondary); }
+        .sh-date-group input { padding: 8px 10px; font-size: 0.8rem; }
+        /* Native select for calendar type — styled to match the glass-card inputs */
+        .sh-date-group select[data-no-convert] {
+            appearance: none;
+            background: var(--glass-bg, rgba(255,255,255,0.06));
+            border: 1px solid rgba(139,92,246,0.35);
+            border-radius: 10px;
+            color: var(--text-primary, #e2e8f0);
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            min-width: 96px;
+        }
+        .sh-date-group select[data-no-convert]:focus { outline: none; border-color: var(--primary-glow); box-shadow: 0 0 0 3px rgba(139,92,246,0.18); }
+        @media (max-width: 700px) { .sh-date-group { grid-template-columns: 1fr 1fr; } }
+
+        /* Validator Bar */
+        .validator-bar {
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .validator-invalid {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #f87171;
+        }
+
+        .validator-valid {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #34d399;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Right Panel Output */
+        .terminal-container {
+            background: #020306;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #a7f3d0;
+            flex: 1 1 0;           /* grow/shrink inside the sticky panel */
+            min-height: 220px;     /* never collapse completely */
+            overflow-y: auto;
+            white-space: pre-wrap;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        .terminal-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .terminal-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .terminal-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .caret {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: var(--success-color);
+            margin-left: 4px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Large Action Button */
+        .run-btn {
+            background: linear-gradient(90deg, #7c3aed 0%, #06b6d4 100%);
+            border: none;
+            border-radius: 16px;
+            color: #fff;
+            padding: 20px 40px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(6, 182, 212, 0.5);
+            background: linear-gradient(90deg, #8b5cf6 0%, #22d3ee 100%);
+        }
+
+        .run-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .run-btn:disabled {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .status-running {
+            background: var(--success-color);
+            box-shadow: 0 0 15px var(--success-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ── ISIC Multi-Code Manager ─────────────────────────────────────────── */
+        .isic-manager {
+            gap: 10px;
+        }
+
+        #isicCodeList {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .isic-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .isic-row input {
+            flex: 1;
+        }
+
+        .remove-isic-btn {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            color: #f87171;
+            width: 34px;
+            height: 34px;
+            font-size: 1.2rem;
+            line-height: 1;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-isic-btn:hover {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.6);
+        }
+
+        .add-isic-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px dashed rgba(6, 182, 212, 0.4);
+            border-radius: 10px;
+            color: var(--secondary-glow);
+            padding: 9px 16px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            align-self: flex-start;
+        }
+
+        .add-isic-btn:hover {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: rgba(6, 182, 212, 0.7);
+        }
+
+        /* ── OTP Verification Panel ──────────────────────────────────────────── */
+        .otp-panel {
+            background: linear-gradient(135deg, rgba(139,92,246,0.10) 0%, rgba(6,182,212,0.07) 100%);
+            border: 1px solid rgba(139,92,246,0.55);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            animation: otpGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes otpGlow {
+            from { box-shadow: 0 0 18px rgba(139,92,246,0.15); }
+            to   { box-shadow: 0 0 42px rgba(139,92,246,0.35), 0 0 60px rgba(6,182,212,0.1); }
+        }
+
+        .otp-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .otp-panel-header h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #a78bfa;
+            margin: 0;
+        }
+
+        /* ── Smart Engine Alerts (AI fallback queue) ─────────────────────────── */
+        .failures-panel {
+            background: linear-gradient(135deg, rgba(251,191,36,0.08) 0%, rgba(239,68,68,0.06) 100%);
+            border: 1px solid rgba(251,191,36,0.45);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .failures-panel.visible { display: flex; }
+        .failures-panel h4 { margin: 0; font-size: 0.95rem; color: #fbbf24; }
+        .failures-list { font-size: 0.8rem; color: #fcd34d; line-height: 1.5; }
+        .failures-list li { margin-bottom: 4px; }
+        .failures-actions { display: flex; gap: 8px; }
+        .failures-btn {
+            font-size: 0.75rem; padding: 6px 12px; border-radius: 8px;
+            border: 1px solid rgba(251,191,36,0.5); background: rgba(0,0,0,0.3);
+            color: #fde68a; cursor: pointer;
+        }
+
+        .otp-pulse-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #a78bfa;
+            box-shadow: 0 0 10px #a78bfa;
+            animation: pulse 1.2s infinite;
+            flex-shrink: 0;
+        }
+
+        .otp-desc {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .otp-field-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .otp-field-row > label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .otp-input-group input {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(139,92,246,0.4);
+            border-radius: 10px;
+            color: var(--text-main);
+            padding: 11px 16px;
+            font-size: 1.15rem;
+            font-family: 'Fira Code', monospace;
+            letter-spacing: 0.18em;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .otp-input-group input:focus {
+            border-color: rgba(139,92,246,0.9);
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.18);
+        }
+
+        .otp-input-group input:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .otp-submit-btn {
+            background: linear-gradient(90deg, #7c3aed 0%, #0891b2 100%);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            padding: 11px 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(124,58,237,0.3);
+            letter-spacing: 0.02em;
+        }
+
+        .otp-submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(6,182,212,0.45);
+        }
+
+        .otp-submit-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .otp-submit-btn:disabled {
+            background: rgba(255,255,255,0.07);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .otp-mobile-btn {
+            background: linear-gradient(90deg, #065f46 0%, #0891b2 100%);
+            box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+        }
+
+        .otp-field-status {
+            font-size: 0.8rem;
+            min-height: 16px;
+            color: #34d399;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .otp-field-status.otp-error {
+            color: var(--error-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>MISA Saudi Automation Center</h1>
+        <p>Interactive Control Panel & Dynamic E2E Test Suite</p>
+    </header>
+
+    <main>
+        <!-- LEFT PANEL: Dynamic Forms -->
+        <div class="panel">
+            <!-- SECTION 1: Lead Information -->
+            <div class="section-card">
+                <h2>Lead Details (Step 1 Registration)</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="regTitle">Title <span class="required-asterisk">*</span></label>
+                        <select id="regTitle">
+                            <option value="Dr.">Dr.</option>
+                            <option value="Miss">Miss</option>
+                            <option value="Mr." selected>Mr.</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Ms.">Ms.</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="required-asterisk">*</span></label>
+                        <input type="text" id="firstName" value="Tarek">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name <span class="required-asterisk">*</span></label>
+                        <input type="text" id="lastName" value="Dadda">
+                    </div>
+                    <div class="form-group">
+                        <label for="nationalId">National ID / IQAMA ID</label>
+                        <input type="text" id="nationalId" placeholder="Leave empty to skip this field">
+                    </div>
+                    <div class="form-group">
+                        <label for="companyName">Company Name</label>
+                        <input type="text" id="companyName" placeholder="Leave empty for dynamic auto-generation">
+                    </div>
+                    <div class="form-group">
+                        <label for="sector">Sector <span class="required-asterisk">*</span></label>
+                        <select id="sector">
+                            <option value="Real Estate">Real Estate</option>
+                            <option value="Mining and Metals">Mining and Metals</option>
+                            <option value="HealthCare and Life Sciences">HealthCare and Life Sciences</option>
+                            <option value="Industrial and Manufacturing">Industrial and Manufacturing</option>
+                            <option value="Energy">Energy</option>
+                            <option value="Tourism and Quality of Life">Tourism and Quality of Life</option>
+                            <option value="Chemicals">Chemicals</option>
+                            <option value="Transport and Logistics">Transport and Logistics</option>
+                            <option value="Information and Communication Technology" selected>Information and Communication Technology</option>
+                            <option value="Aerospace and Defense">Aerospace and Defense</option>
+                            <option value="Pharma and BioTech">Pharma and BioTech</option>
+                            <option value="Environment Services">Environment Services</option>
+                            <option value="Human Capital Innovation">Human Capital Innovation</option>
+                            <option value="Financial Services">Financial Services</option>
+                            <option value="Agriculture and Food Processing">Agriculture and Food Processing</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="targetEmail">Registration Email <span class="required-asterisk">*</span></label>
+                        <input type="email" id="targetEmail" value="vranlh8dja@yzcalo.com" placeholder="Email for registration OTP">
+                    </div>
+                    <div class="form-group">
+                        <label>Registration Country <span class="required-asterisk">*</span></label>
+                        <div class="custom-select-container" id="countryContainer">
+                            <div class="custom-select-trigger" onclick="toggleCustomDropdown('country')">
+                                <span id="countryValue">Saudi Arabia</span>
+                                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                            <div class="custom-dropdown-panel" id="countryPanel">
+                                <input type="text" class="custom-dropdown-search" placeholder="Search country..." oninput="filterCustomDropdown('country', this.value)">
+                                <div class="custom-dropdown-options" id="countryOptions"></div>
+                            </div>
+                            <input type="hidden" id="country" value="Saudi Arabia" onchange="validatePercentage()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="regMobile">Registration Mobile Phone <span class="required-asterisk">*</span></label>
+                        <input type="text" id="regMobile" placeholder="e.g. 7123456789">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Credentials Configuration -->
+            <div class="section-card">
+                <h2>Account Credentials (Step 2 Setup)</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="credsUsername">Account Username <span class="required-asterisk">*</span></label>
+                        <input type="text" id="credsUsername" placeholder="Leave empty for auto-generated username">
+                    </div>
+                    <div class="form-group">
+                        <label for="credsPassword">Account Password <span class="required-asterisk">*</span></label>
+                        <input type="text" id="credsPassword" value="SecurePass123!">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: Entity Details -->
+            <div class="section-card">
+                <h2>Entity Profile (Step 5 Details)</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="entityNameEnglish">Entity Name (English) <span class="required-asterisk">*</span></label>
+                        <input type="text" id="entityNameEnglish" value="Alpha Tech Solutions">
+                    </div>
+                    <div class="form-group">
+                        <label for="entityNameArabic">Entity Name (Arabic) <span class="required-asterisk">*</span></label>
+                        <input type="text" id="entityNameArabic" value="ألفا للحلول التقنية">
+                    </div>
+                    <div class="form-group">
+                        <label for="legalStatus">Legal Status <span class="required-asterisk">*</span></label>
+                        <select id="legalStatus">
+                            <option value="Limited Liability Company" selected>Limited Liability Company</option>
+                            <option value="Simple Limited Partnership">Simple Limited Partnership</option>
+                            <option value="Joint Stock Company">Joint Stock Company</option>
+                            <option value="Branch of a Foreign Company">Branch of a Foreign Company</option>
+                            <option value="General Partnership">General Partnership</option>
+                            <option value="Simplified Joint Stock Company">Simplified Joint Stock Company</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="capital">Capital (SAR) <span class="required-asterisk">*</span></label>
+                        <input type="text" id="capital" value="100000">
+                    </div>
+                    <div class="form-group">
+                        <label for="region">Region <span class="required-asterisk">*</span></label>
+                        <select id="region">
+                            <option value="Al Riyadh" selected>Al Riyadh</option>
+                            <option value="Eastern Region">Eastern Region</option>
+                            <option value="Mecca Al Mokarama">Mecca Al Mokarama</option>
+                            <option value="Al Madina Al Moawra">Al Madina Al Moawra</option>
+                            <option value="Al Qasim">Al Qasim</option>
+                            <option value="Assir">Assir</option>
+                            <option value="Tabouk">Tabouk</option>
+                            <option value="Hail">Hail</option>
+                            <option value="Northern Borders">Northern Borders</option>
+                            <option value="Jazan">Jazan</option>
+                            <option value="Najran">Najran</option>
+                            <option value="Al Baha">Al Baha</option>
+                            <option value="Al Jouf">Al Jouf</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City <span class="required-asterisk">*</span></label>
+                        <select id="city">
+                            <option value="Riyadh" selected>Riyadh</option>
+                            <option value="Arar">Arar</option>
+                            <option value="Rafha">Rafha</option>
+                            <option value="Turaif">Turaif</option>
+                            <option value="Al Uwayqilah">Al Uwayqilah</option>
+                            <option value="Manfaz Jadedat Arar">Manfaz Jadedat Arar</option>
+                            <option value="Rawdat Ibn Habas">Rawdat Ibn Habas</option>
+                            <option value="Shouabt Nessab">Shouabt Nessab</option>
+                            <option value="Linah">Linah</option>
+                            <option value="Timiat">Timiat</option>
+                            <option value="Lawqah">Lawqah</option>
+                            <option value="السليمانية">السليمانية</option>
+                            <option value="Al Kasib">Al Kasib</option>
+                            <option value="Al Jirani">Al Jirani</option>
+                            <option value="Al Hamad">Al Hamad</option>
+                            <option value="Nuayj">Nuayj</option>
+                            <option value="Qa Al Hinu">Qa Al Hinu</option>
+                            <option value="Markaz As Sahan">Markaz As Sahan</option>
+                            <option value="Aba Ar Rawath">Aba Ar Rawath</option>
+                            <option value="Umm Khunsur">Umm Khunsur</option>
+                            <option value="Hazm Al Jalamid">Hazm Al Jalamid</option>
+                            <option value="Ad Duwayd">Ad Duwayd</option>
+                            <option value="Jadidat Arar">Jadidat Arar</option>
+                            <option value="Markaz Umm Al Hiran">Markaz Umm Al Hiran</option>
+                            <option value="Markaz Samah Al Jadid">Markaz Samah Al Jadid</option>
+                            <option value="Markaz Adh Dhahrah">Markaz Adh Dhahrah</option>
+                            <option value="Ibn Suqi">Ibn Suqi</option>
+                            <option value="Nisab">Nisab</option>
+                            <option value="Samah">Samah</option>
+                            <option value="Umm Rudmah">Umm Rudmah</option>
+                            <option value="Ibn Lughaisim">Ibn Lughaisim</option>
+                            <option value="Rawdat Habbas">Rawdat Habbas</option>
+                            <option value="Ibn Shuraym">Ibn Shuraym</option>
+                            <option value="Ash Shuabah">Ash Shuabah</option>
+                            <option value="Al Markuz">Al Markuz</option>
+                            <option value="Al Adari">Al Adari</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="investmentSpending">Investment Spending <span class="required-asterisk">*</span></label>
+                        <select id="investmentSpending">
+                            <option value="Below SAR 1,000,000">Below SAR 1,000,000</option>
+                            <option value="Between SAR 1,000,000 - 5,000,000" selected>Between SAR 1,000,000 - 5,000,000</option>
+                            <option value="Between SAR 5,000,000 - 10,000,000">Between SAR 5,000,000 - 10,000,000</option>
+                            <option value="Between SAR 10,000,000 - 25,000,000">Between SAR 10,000,000 - 25,000,000</option>
+                            <option value="Between SAR 25,000,000 - 50,000,000">Between SAR 25,000,000 - 50,000,000</option>
+                            <option value="Between SAR 50,000,000 - 100,000,000">Between SAR 50,000,000 - 100,000,000</option>
+                            <option value="Between SAR 100,000,000 - 500,000,000">Between SAR 100,000,000 - 500,000,000</option>
+                            <option value="Between SAR 500,000,000 - 1,000,000,000">Between SAR 500,000,000 - 1,000,000,000</option>
+                            <option value="Above SAR 1,000,000,000">Above SAR 1,000,000,000</option>
+                        </select>
+                    </div>
+                    <!-- ISIC Multi-Code Manager — add one row per business activity -->
+                    <div class="form-group isic-manager" style="grid-column: 1 / -1;">
+                        <label>Business Activity ISIC Codes (Step 4) <span class="required-asterisk">*</span>
+                            <span style="font-size:0.72rem; font-weight:400; color:var(--text-muted); text-transform:none; letter-spacing:0;">
+                                — Add one row per activity. For multiple codes the workflow loops automatically.
+                            </span>
+                        </label>
+                        <div id="isicCodeList">
+                            <!-- ISIC rows appended dynamically via addIsicRow() -->
+                        </div>
+                        <button type="button" class="add-isic-btn" onclick="addIsicRow()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Add Another ISIC Code
+                        </button>
+                        <datalist id="isicDatalist"></datalist>
+                        <datalist id="countryDatalist"></datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="entityEmail">Entity Contact Email <span class="required-asterisk">*</span></label>
+                        <input type="email" id="entityEmail" value="business@alphatech.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="entityMobile">Entity Contact Mobile <span class="required-asterisk">*</span></label>
+                        <div class="phone-group">
+                            <select id="entityMobilePrefix"></select>
+                            <input type="text" id="entityMobile" value="500000000">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: Step 5 Document Upload Paths -->
+            <div class="section-card">
+                <h2>Entity Document Uploads (Step 5 Attachments)</h2>
+                <div class="form-grid">
+                    <div class="form-group file-upload-container">
+                        <label>Commercial Registration Copy <span class="required-asterisk">*</span></label>
+                        <label class="file-upload-box" id="entityCRLabel">
+                            <svg class="upload-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            <span class="file-status">Drag & Drop or Browse File</span>
+                            <input type="file" id="entityCRFile" onchange="handleFileSelect(this, 'entityCRLabel', 'entityCRFile')">
+                        </label>
+                    </div>
+                    <div class="form-group file-upload-container">
+                        <label>Financial Statement Copy <span class="required-asterisk">*</span></label>
+                        <label class="file-upload-box" id="entityFSLabel">
+                            <svg class="upload-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            <span class="file-status">Drag & Drop or Browse File</span>
+                            <input type="file" id="entityFSFile" onchange="handleFileSelect(this, 'entityFSLabel', 'entityFSFile')">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4.5: Contact Person Details -->
+            <div class="section-card">
+                <h2>Contact Person Profile (Step 7 Details)</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="contactTitle">Title <span class="required-asterisk">*</span></label>
+                        <select id="contactTitle">
+                            <option value="Dr.">Dr.</option>
+                            <option value="Miss">Miss</option>
+                            <option value="Mr." selected>Mr.</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Ms.">Ms.</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactFullNameEn">Full Name (English) <span class="required-asterisk">*</span></label>
+                        <input type="text" id="contactFullNameEn" value="Tarek Dadda">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactFirstNameAr">First Name (Arabic) <span class="required-asterisk">*</span></label>
+                        <input type="text" id="contactFirstNameAr" value="طارق">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactLastNameAr">Last Name (Arabic) <span class="required-asterisk">*</span></label>
+                        <input type="text" id="contactLastNameAr" value="دادا">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Nationality <span class="required-asterisk">*</span></label>
+                        <div class="custom-select-container" id="contactNationalityContainer">
+                            <div class="custom-select-trigger" onclick="toggleCustomDropdown('contactNationality')">
+                                <span id="contactNationalityValue">Algeria</span>
+                                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                            <div class="custom-dropdown-panel" id="contactNationalityPanel">
+                                <input type="text" class="custom-dropdown-search" placeholder="Search nationality..." oninput="filterCustomDropdown('contactNationality', this.value)">
+                                <div class="custom-dropdown-options" id="contactNationalityOptions"></div>
+                            </div>
+                            <input type="hidden" id="contactNationality" value="Algeria" onchange="validatePercentage()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactPassportNumber">Passport Number <span class="required-asterisk">*</span></label>
+                        <input type="text" id="contactPassportNumber" value="A12345678">
+                    </div>
+                    
+                    <!-- Date of Birth Picker -->
+                    <div class="form-group">
+                        <label>Date of Birth <span class="required-asterisk">*</span></label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="contactDobDay" value="17" placeholder="Day" style="width: 60px; text-align: center;">
+                            <select id="contactDobMonth" style="flex-grow: 1;">
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May" selected>May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                            <input type="text" id="contactDobYear" value="1990" placeholder="Year" style="width: 80px; text-align: center;">
+                        </div>
+                    </div>
+
+                    <!-- ID Issue Date -->
+                    <div class="form-group">
+                        <label>ID Issue Date <span class="required-asterisk">*</span></label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="contactIssueDay" value="17" placeholder="Day" style="width: 60px; text-align: center;">
+                            <select id="contactIssueMonth" style="flex-grow: 1;">
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May" selected>May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                            <input type="text" id="contactIssueYear" value="2020" placeholder="Year" style="width: 80px; text-align: center;">
+                        </div>
+                    </div>
+
+                    <!-- ID Expiry Date -->
+                    <div class="form-group">
+                        <label>ID Expiry Date <span class="required-asterisk">*</span></label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="contactExpiryDay" value="17" placeholder="Day" style="width: 60px; text-align: center;">
+                            <select id="contactExpiryMonth" style="flex-grow: 1;">
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May" selected>May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                            <input type="text" id="contactExpiryYear" value="2030" placeholder="Year" style="width: 80px; text-align: center;">
+                        </div>
+                    </div>
+
+                    <!-- Contact Details -->
+                    <div class="form-group">
+                        <label>Country of Residence <span class="required-asterisk">*</span></label>
+                        <div class="custom-select-container" id="contactCountryContainer">
+                            <div class="custom-select-trigger" onclick="toggleCustomDropdown('contactCountry')">
+                                <span id="contactCountryValue">Algeria</span>
+                                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                            <div class="custom-dropdown-panel" id="contactCountryPanel">
+                                <input type="text" class="custom-dropdown-search" placeholder="Search country..." oninput="filterCustomDropdown('contactCountry', this.value)">
+                                <div class="custom-dropdown-options" id="contactCountryOptions"></div>
+                            </div>
+                            <input type="hidden" id="contactCountry" value="Algeria" onchange="validatePercentage()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactCity">City <span class="required-asterisk">*</span></label>
+                        <input type="text" id="contactCity" value="Algiers">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmail">Contact Email <span class="required-asterisk">*</span></label>
+                        <input type="email" id="contactEmail" value="business@alphatech.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMobile">Contact Mobile <span class="required-asterisk">*</span></label>
+                        <div class="phone-group">
+                            <select id="contactMobilePrefix"></select>
+                            <input type="text" id="contactMobile" value="500000000">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: Shareholders Configurator -->
+            <div class="section-card">
+                <div class="shareholder-header">
+                    <h2>Shareholders Configurator (Step 6 Details)</h2>
+                    <button class="add-sh-btn" type="button" onclick="addShareholderCard()">+ Add Shareholder</button>
+                </div>
+
+                <!-- Live validator bar -->
+                <div id="validatorBar" class="validator-bar validator-invalid">
+                    <span>Sum of percentages: <strong id="totalPercent">0%</strong></span>
+                    <span id="validatorStatus">Total must sum to exactly 100% to proceed.</span>
+                </div>
+
+                <div class="shareholder-list" id="shareholderList">
+                    <!-- Shareholder cards appended dynamically here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: Action Console & Output Terminal -->
+        <div class="panel" style="justify-content: flex-start; gap: 20px; position: sticky; top: 20px; max-height: calc(100vh - 120px); overflow: hidden;">
+            <div class="status-header">
+                <h2>Execution Stream</h2>
+                <div class="status-dot" id="statusDot"></div>
+            </div>
+
+            <div class="terminal-container" id="terminal">Welcome to MISA Automation Suite Terminal.<br>Configure variables, verify shareholders percentage sum to 100%, and click "Run Automation" to start.<br><span class="caret"></span></div>
+
+            <!-- ── OTP VERIFICATION PANEL ────────────────────────────────────────
+                 Hidden by default. Revealed automatically when the automation
+                 reaches an OTP step. Saudi Mobile OTP row is shown only when
+                 the selected Registration Country is "Saudi Arabia".
+            ──────────────────────────────────────────────────────────────────── -->
+            <div class="otp-panel" id="otpPanel" style="display:none;">
+                <div class="otp-panel-header">
+                    <span class="otp-pulse-dot"></span>
+                    <h3>⚡ OTP Verification Required</h3>
+                </div>
+                <p class="otp-desc">
+                    The automation is paused and waiting for you to enter the OTP code(s).
+                    Check your inbox / phone, then paste the code(s) below and click Submit.
+                    The browser will resume automatically within 2 seconds.
+                </p>
+
+                <!-- Email OTP — always present when panel is visible -->
+                <div class="otp-field-row" id="emailOtpRow">
+                    <label>Email OTP <span class="required-asterisk">*</span></label>
+                    <div class="otp-input-group">
+                        <input type="text" id="emailOtpInput"
+                               placeholder="e.g. 123456"
+                               maxlength="10"
+                               autocomplete="one-time-code"
+                               onkeydown="if(event.key==='Enter') submitOtp('email')">
+                        <button type="button" class="otp-submit-btn" id="emailOtpBtn" onclick="submitOtp('email')">
+                            Submit Email OTP
+                        </button>
+                    </div>
+                    <span class="otp-field-status" id="emailOtpStatus"></span>
+                </div>
+
+                <!-- Saudi Mobile OTP — shown only when Registration Country == Saudi Arabia -->
+                <div class="otp-field-row" id="mobileOtpRow" style="display:none;">
+                    <label>Saudi Mobile OTP <span class="required-asterisk">*</span></label>
+                    <div class="otp-input-group">
+                        <input type="text" id="mobileOtpInput"
+                               placeholder="e.g. 123456"
+                               maxlength="10"
+                               autocomplete="one-time-code"
+                               onkeydown="if(event.key==='Enter') submitOtp('mobile')">
+                        <button type="button" class="otp-submit-btn otp-mobile-btn" id="mobileOtpBtn" onclick="submitOtp('mobile')">
+                            Submit Mobile OTP
+                        </button>
+                    </div>
+                    <span class="otp-field-status" id="mobileOtpStatus"></span>
+                </div>
+            </div>
+
+            <div class="failures-panel" id="failuresPanel">
+                <h4>⚠ Smart Engine — needs attention (AI queue)</h4>
+                <ul class="failures-list" id="failuresList"></ul>
+                <div class="failures-actions">
+                    <button type="button" class="failures-btn" onclick="refreshFailures()">Refresh</button>
+                    <button type="button" class="failures-btn" onclick="clearFailures()">Clear queue</button>
+                </div>
+            </div>
+
+            <button class="run-btn" id="runBtn" disabled onclick="startAutomation()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                RUN AUTOMATION
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // Curated list of allowed MISA ISIC Codes
+        const ALL_ISIC_CODES = [
+            { code: "A011101", name: "Grain cultivation includes (wheat, barley, yellow and white corn etc.) New (allowed)" },
+            { code: "A011102", name: "Cultivation of bean crops includes (beans, chickpeas, peas... etc.) New (allowed)" },
+            { code: "A011103", name: "Cultivation of grain and oilseeds includes (Soya beans, nuts, Sesame seeds... etc.) New (allowed)" },
+            { code: "A011200", name: "Rice cultivation New (allowed)" },
+            { code: "A011301", name: "Cultivation of potatoes and sweet potatoes New (allowed)" },
+            { code: "A011302", name: "Onion cultivation New (allowed)" },
+            { code: "A011303", name: "Tomato cultivation New (allowed)" },
+            { code: "A011304", name: "Carrot cultivation New (allowed)" },
+            { code: "A011305", name: "Garlic cultivation New (allowed)" },
+            { code: "A011306", name: "Growing vegetable in green houses New (allowed)" },
+            { code: "A011307", name: "Growing different kinds of vegetable in open fields New (allowed)" },
+            { code: "A011308", name: "Aquaculture for production of vegetable New (allowed)" },
+            { code: "A011311", name: "Growing of mushrooms New (allowed)" },
+            { code: "A011400", name: "Cultivation of sugar cane New (allowed)" },
+            { code: "A011600", name: "Cultivation of fiber crops includes (cotton, Jute, flax...etc.) New (allowed)" },
+            { code: "A011901", name: "Fodder cultivation as Lucerne and other animal fodder New (allowed)" },
+            { code: "A011902", name: "Aromatic plants and flowers New (allowed)" },
+            { code: "A011903", name: "Aquaculture for production of flowers New (allowed)" },
+            { code: "A012100", name: "Cultivation of grapes New (allowed)" },
+            { code: "A012201", name: "Palm cultivation and dates production New (allowed)" },
+            { code: "A012202", name: "Fig production New (allowed)" },
+            { code: "A012203", name: "Mango cultivation New (allowed)" },
+            { code: "A012300", name: "Cultivation of citrus fruit New (allowed)" },
+            { code: "A012400", name: "Cultivation of apple seeds and stone fruits includes (apple, Apricot, cherry, peach, pearly, plum...etc.) New (allowed)" },
+            { code: "A012601", name: "Olive cultivation New (allowed)" },
+            { code: "A012700", name: "Cultivation of beverage crops includes (coffee, tea, cocoa... etc.) New (allowed)" },
+            { code: "A012800", name: "Cultivation of spices, aromatic crops and drug and pharmaceutical crops New (allowed)" },
+            { code: "A013001", name: "Cultivation of decoration plants and seedlings New (allowed)" },
+            { code: "A013002", name: "Cultivation of live plants for planting and decoration New (allowed)" },
+            { code: "A013003", name: "Tissue culture and plant propagation including palm trees New (allowed)" },
+            { code: "A014101", name: "Raising of cattle New (allowed)" },
+            { code: "A014102", name: "Calves fattening New (allowed)" },
+            { code: "A014300", name: "Breeding of camels and similar animals New (allowed)" },
+            { code: "A014401", name: "Raising of sheep New (allowed)" },
+            { code: "A014402", name: "Raising of goat New (allowed)" },
+            { code: "A014611", name: "Raising and production of broiler chickens mothers and their hatcheries New (allowed)" },
+            { code: "A014612", name: "Raising and production of layer chickens mothers and their hatcheries New (allowed)" },
+            { code: "A014613", name: "Raising and production of layer chickens grandmothers and their hatcheries New (allowed)" },
+            { code: "A014614", name: "Raising and production of broiler chickens grandmothers and their hatcheries New (allowed)" },
+            { code: "A014615", name: "Egg production New (allowed)" },
+            { code: "A014616", name: "Raising pigeons New (allowed)" },
+            { code: "A014617", name: "broilers production New (allowed)" },
+            { code: "A014901", name: "Beekeeping and honey production New (allowed)" },
+            { code: "A014902", name: "Ostrich breeding New (allowed)" },
+            { code: "A014903", name: "Rabbit farming New (allowed)" },
+            { code: "A014904", name: "Pet keeping and breeding includes (cats, dogs, birds) New (allowed)" },
+            { code: "A014905", name: "Quail keeping New (allowed)" },
+            { code: "A015000", name: "Mixed farming New (allowed)" },
+            { code: "A016101", name: "Agriculture services New (allowed)" },
+            { code: "A016102", name: "Rental of agricultural equipment used by worker New (allowed)" },
+            { code: "A016103", name: "Irrigation projects New (allowed)" },
+            { code: "A016104", name: "Installation of greenhouses New (allowed)" },
+            { code: "A016105", name: "Activities of companies that certify organic products New (allowed)" },
+            { code: "A016106", name: "Aerial spraying New (allowed)" },
+            { code: "A016200", name: "Animal production support activities New (allowed)" },
+            { code: "A016300", name: "Post-harvest crop activities New (allowed)" },
+            { code: "A016400", name: "Seed treatment for propagation New (allowed)" },
+            { code: "A022003", name: "Collecting and cutting of tree residues New (allowed)" },
+            { code: "A023001", name: "Frankincense collection New (allowed)" },
+            { code: "A023002", name: "Mushroom and truffle collection New (allowed)" },
+            { code: "A024000", name: "Forestry support services New (allowed)" },
+            { code: "A032101", name: "Aquaculture of aquatic organisms in marine water New (allowed)" },
+            { code: "A032102", name: "Operating fish hatcheries at sea New (allowed)" },
+            { code: "A032103", name: "Shrimp farming at sea New (allowed)" },
+            { code: "A032201", name: "Aquaculture of aquatic organisms in inland water New (allowed)" },
+            { code: "A032202", name: "Operating freshwater fish hatcheries New (allowed)" },
+            { code: "A032203", name: "Shrimp farming at freshwater New (allowed)" },
+            { code: "A032204", name: "Freshwater ornamental fish farming New (allowed)" },
+            { code: "B051001", name: "Coal mining New (allowed)" },
+            { code: "B051002", name: "Coal cleaning, crushing, scaling and compressing New (allowed)" },
+            { code: "B052001", name: "Lignite cleaning, drying and crushing New (allowed)" },
+            { code: "B072100", name: "Mining of uranium and thorium ores New (allowed)" },
+            { code: "B072901", name: "Mining of non-ferrous metal ores New (allowed)" },
+            { code: "B072902", name: "Mining of precious metal ores New (allowed)" },
+            { code: "B081001", name: "Operating quarries New (allowed)" },
+            { code: "B081002", name: "Gypsum and anhydrite mining New (allowed)" },
+            { code: "B081003", name: "Operating sand or gravel mines, includes (crushers) New (allowed)" },
+            { code: "B089101", name: "Extraction of natural fertilizers New (allowed)" },
+            { code: "B089102", name: "Mining of metals that contain nitrogen and potassium New (allowed)" },
+            { code: "B089103", name: "Mining of sulfur and ores that contain barium New (allowed)" },
+            { code: "B089200", name: "Extraction of peat New (allowed)" },
+            { code: "B089300", name: "Salt extraction New (allowed)" },
+            { code: "B089901", name: "Mining and quarrying to obtain asphalt, bitumen and natural bitumen New (allowed)" },
+            { code: "B089902", name: "Mining and quarrying to obtain precious stones, quartz and mica New (allowed)" },
+            { code: "B091001", name: "Drilling of oil fields New (allowed)" },
+            { code: "B091002", name: "Drilling of natural gas fields New (allowed)" },
+            { code: "B091003", name: "Services related to oil extraction except surveying services New (allowed)" },
+            { code: "B091004", name: "Services related to natural gas extraction except surveying services New (allowed)" },
+            { code: "B099011", name: "Test drilling of mineral explorations and precious metals New (allowed)" },
+            { code: "C101011", name: "Operating slaughterhouses (slaughtering and preparing lamb meat) New (allowed)" },
+            { code: "C101012", name: "Operating slaughterhouses (slaughtering and preparing poultry, rabbits and birds) New (allowed)" },
+            { code: "C101021", name: "Production of poultry and rabbit meat and fresh birds New (allowed)" },
+            { code: "C101022", name: "Production of poultry and rabbit meat and chilled and frozen birds New (allowed)" },
+            { code: "C101030", name: "Slaughtering and preparing hunting animals New (allowed)" },
+            { code: "C101041", name: "Production of fresh meat New (allowed)" },
+            { code: "C101042", name: "Production of chilled and frozen meat New (allowed)" },
+            { code: "C101043", name: "Keeping and preparing meat and its products by drying and canning New (allowed)" },
+            { code: "C101044", name: "Cutting, preparing, and packing meat and poultry New (allowed)" },
+            { code: "C101051", name: "Production of sausage and hamburger from meat New (allowed)" },
+            { code: "C101052", name: "Production of flour and semolina from meat New (allowed)" },
+            { code: "C101053", name: "Production of mortadella from meat New (allowed)" },
+            { code: "C101054", name: "Preparing and keeping animal heads and shins New (allowed)" },
+            { code: "C101060", name: "Manufacture of edible animal fats New (allowed)" },
+            { code: "C101070", name: "Preparation of raw leather and wool New (allowed)" },
+            { code: "C102010", name: "Keeping fish and fish products by canning New (allowed)" },
+            { code: "C102020", name: "Keeping fish and fish products by drying, smoking or salting New (allowed)" },
+            { code: "C102030", name: "Keeping fish and fish products by cooling or freezing New (allowed)" },
+            { code: "C102040", name: "Production of fish fillets and fresh and frozen pickled fish New (allowed)" },
+            { code: "C102050", name: "Production of Caviar and its substitutes New (allowed)" },
+            { code: "C102061", name: "Manufacture of fish products for human consumption New (allowed)" },
+            { code: "C102062", name: "Manufacture of fish products as fodder New (allowed)" },
+            { code: "C102070", name: "Manufacture and processing of fish aboard specialized ships New (allowed)" },
+            { code: "C102080", name: "Cutting and cleaning fish and water livings New (allowed)" },
+            { code: "C103011", name: "Production of fruit powders New (allowed)" },
+            { code: "C103012", name: "Production of fruit juices New (allowed)" },
+            { code: "C103013", name: "Fruit drying, packing and keeping in concentrated glucose fluids New (allowed)" },
+            { code: "C103014", name: "Harvesting and packaging of fruits and vegetables New (allowed)" },
+            { code: "C103021", name: "Packing and keeping legumes by canning New (allowed)" },
+            { code: "C103022", name: "Production of vegetable powders New (allowed)" },
+            { code: "C103023", name: "Manufacture of potato-made food products New (allowed)" },
+            { code: "C103024", name: "Manufacture of flour and semolina made from potatoes New (allowed)" },
+            { code: "C103025", name: "Manufacture of processed meals of vegetables New (allowed)" },
+            { code: "C103031", name: "Cooling and freezing fruits New (allowed)" },
+            { code: "C103032", name: "Cooling and freezing vegetables New (allowed)" },
+            { code: "C103041", name: "Drying and packing dates and manufacture of their products New (allowed)" },
+            { code: "C103042", name: "Drying and packing grapes and figs New (allowed)" },
+            { code: "C103050", name: "Manufacture of tomato sauce New (allowed)" },
+            { code: "C103061", name: "Roasting and packing nuts New (allowed)" },
+            { code: "C103062", name: "Manufacture of nut butter New (allowed)" },
+            { code: "C103070", name: "Manufacture of jam and gels New (allowed)" },
+            { code: "C103080", name: "Manufacture of pickles New (allowed)" },
+            { code: "C104011", name: "Production and refining of olive oil New (allowed)" },
+            { code: "C104012", name: "Production and refining of sesame oil New (allowed)" },
+            { code: "C104013", name: "Production and refining of sunflower oil New (allowed)" },
+            { code: "C104014", name: "Production and refining of margarine New (allowed)" },
+            { code: "C104015", name: "Production and refining of Palm oil New (allowed)" },
+            { code: "C104016", name: "Production and refining of Soya bean oil New (allowed)" },
+            { code: "C104020", name: "Extraction and refining of animal fats New (allowed)" },
+            { code: "C104030", name: "Extraction and refining of oils from fish New (allowed)" },
+            { code: "C105010", name: "Production of fresh liquid milk New (allowed)" },
+            { code: "C105021", name: "Cream production New (allowed)" },
+            { code: "C105022", name: "Production of butter or margarine from milk New (allowed)" },
+            { code: "C105031", name: "Production of white cheese New (allowed)" },
+            { code: "C105032", name: "Production of cooked cheese New (allowed)" },
+            { code: "C105041", name: "Manufacture of dried milk (powder) New (allowed)" },
+            { code: "C105042", name: "Manufacture of condensed milk New (allowed)" },
+            { code: "C105050", name: "Manufacture of ice cream New (allowed)" },
+            { code: "C105061", name: "Production of condensed and dried whey New (allowed)" },
+            { code: "C105062", name: "Production of casein and milk sugar (lactose) New (allowed)" },
+            { code: "C105070", name: "Production of yogurt and dehydrated yogurt New (allowed)" },
+            { code: "C106111", name: "Wheat packing and milling New (allowed)" },
+            { code: "C106112", name: "Maize packing and milling New (allowed)" },
+            { code: "C106113", name: "Barley packing and milling New (allowed)" },
+            { code: "C106114", name: "Packing and milling of flour, meal and bulgur wheat New (allowed)" },
+            { code: "C106115", name: "Oats production New (allowed)" },
+            { code: "C106116", name: "Grain mills New (allowed)" },
+            { code: "C106120", name: "Rice packing and milling New (allowed)" },
+            { code: "C106130", name: "Production of flour from rice New (allowed)" },
+            { code: "C106140", name: "Milling and packing of dried leguminous vegetables New (allowed)" },
+            { code: "C106150", name: "Manufacture of flour and dough for bakeries New (allowed)" },
+            { code: "C106160", name: "Manufacture of breakfast grain foods in flakes New (allowed)" },
+            { code: "C106161", name: "Popcorn manufacturing New (allowed)" },
+            { code: "C106211", name: "Manufacture of starch from corn New (allowed)" },
+            { code: "C106212", name: "Manufacture of starch from potatoes New (allowed)" },
+            { code: "C106220", name: "Corn milling New (allowed)" },
+            { code: "C106230", name: "Manufacture of glucose, glucose syrup, barley sugar New (allowed)" },
+            { code: "C106240", name: "Production and refining of corn oil New (allowed)" },
+            { code: "C107110", name: "Manufacture of domestic bread New (allowed)" },
+            { code: "C107120", name: "Manufacture of bread by automatic bakeries New (allowed)" },
+            { code: "C107130", name: "Manufacture of different kinds of pies New (allowed)" },
+            { code: "C107140", name: "Manufacture of layer cake and all kinds of cakes New (allowed)" },
+            { code: "C107150", name: "Manufacture of all kinds of biscuits New (allowed)" },
+            { code: "C107160", name: "Manufacture of bread and pastry flakes New (allowed)" },
+            { code: "C107170", name: "Manufacture of frozen bakery products New (allowed)" },
+            { code: "C107181", name: "Making Eastern and traditional desserts New (allowed)" },
+            { code: "C107182", name: "Preparing and processing sweets in shops New (allowed)" },
+            { code: "C107211", name: "Extraction of raw sugar from cane and beet New (allowed)" },
+            { code: "C107212", name: "Production of cane and beet sugar syrup New (allowed)" },
+            { code: "C107213", name: "Production of black honey (molasses) New (allowed)" },
+            { code: "C107214", name: "Maple sugar production New (allowed)" },
+            { code: "C107215", name: "Invert sugar production New (allowed)" },
+            { code: "C107216", name: "Palm sugar production New (allowed)" },
+            { code: "C107220", name: "Sugar packing New (allowed)" },
+            { code: "C107300", name: "making cocoa, chocolate and sugary sweets New (allowed)" },
+            { code: "C107311", name: "Manufacture of cocoa paste, powder or pellet New (allowed)" },
+            { code: "C107312", name: "Manufacture of cocoa butter, fat or oil New (allowed)" },
+            { code: "C107320", name: "Production of milk chocolate, white and dark chocolate New (allowed)" },
+            { code: "C107330", name: "Manufacture of sugar sweets New (allowed)" },
+            { code: "C107340", name: "Manufacture of gum New (allowed)" },
+            { code: "C107350", name: "Manufacture of Halvah New (allowed)" },
+            { code: "C107360", name: "Keeping fruits, nuts and other plants in sugar New (allowed)" },
+            { code: "C107411", name: "Manufacture of all kinds of pasta New (allowed)" },
+            { code: "C107412", name: "Manufacture of all kinds of noodles New (allowed)" },
+            { code: "C107420", name: "Manufacture of couscous New (allowed)" },
+            { code: "C107430", name: "Manufacture of packaged or frozen stuffed pastries New (allowed)" },
+            { code: "C107441", name: "Manufacture of cooked stuffed pastries New (allowed)" },
+            { code: "C107442", name: "Manufacture of non-cooked stuffed pastries New (allowed)" },
+            { code: "C107501", name: "Manufacture of meat dishes New (allowed)" },
+            { code: "C107502", name: "Manufacture of chicken dishes New (allowed)" },
+            { code: "C107503", name: "Manufacture of fish dishes, including fried fish New (allowed)" },
+            { code: "C107504", name: "Manufacture of potato slices New (allowed)" },
+            { code: "C107505", name: "Manufacture of ready vegetable dishes New (allowed)" },
+            { code: "C107506", name: "Manufacture of ready soup New (allowed)" },
+            { code: "C251114", name: "Manufacture of other structural metal products New (allowed)" }
+        ];
+
+        // List of all 200+ countries with codes
+        const ALL_COUNTRIES = [
+            { code: "+966", name: "Saudi Arabia" },
+            { code: "+93", name: "Afghanistan" },
+            { code: "+355", name: "Albania" },
+            { code: "+213", name: "Algeria" },
+            { code: "+684", name: "American Samoa" },
+            { code: "+1809", name: "American Virgin Islands" },
+            { code: "+376", name: "Andorra" },
+            { code: "+244", name: "Angola" },
+            { code: "+1809", name: "Anguilla" },
+            { code: "+672", name: "Antarctica" },
+            { code: "+1809", name: "Antigua/Barbuda" },
+            { code: "+54", name: "Argentina" },
+            { code: "+374", name: "Armenia" },
+            { code: "+297", name: "Aruba" },
+            { code: "+61", name: "Australia" },
+            { code: "+43", name: "Austria" },
+            { code: "+994", name: "Azerbaijan" },
+            { code: "+1809", name: "Bahamas" },
+            { code: "+973", name: "Bahrain" },
+            { code: "+880", name: "Bangladesh" },
+            { code: "+1809", name: "Barbados" },
+            { code: "+375", name: "Belarus" },
+            { code: "+32", name: "Belgium" },
+            { code: "+501", name: "Belize" },
+            { code: "+229", name: "Benin" },
+            { code: "+1809", name: "Bermuda" },
+            { code: "+975", name: "Bhutan" },
+            { code: "+591", name: "Bolivia" },
+            { code: "+387", name: "Bosnia/Herz." },
+            { code: "+267", name: "Botswana" },
+            { code: "+55", name: "Bouvet Islands" },
+            { code: "+55", name: "Brazil" },
+            { code: "+1809", name: "British Virgin Islands" },
+            { code: "+673", name: "Brunei Daruss." },
+            { code: "+359", name: "Bulgaria" },
+            { code: "+226", name: "Burkina Faso" },
+            { code: "+95", name: "Burma" },
+            { code: "+257", name: "Burundi" },
+            { code: "+855", name: "Cambodia" },
+            { code: "+237", name: "Cameroon" },
+            { code: "+1", name: "Canada" },
+            { code: "+238", name: "Cape Verde" },
+            { code: "+1809", name: "Cayman Islands" },
+            { code: "+236", name: "Ce. African. Re" },
+            { code: "+235", name: "Chad" },
+            { code: "+56", name: "Chile" },
+            { code: "+86", name: "China" },
+            { code: "+61", name: "Christmas Isl." },
+            { code: "+672", name: "Coconut Islands" },
+            { code: "+57", name: "Colombia" },
+            { code: "+269", name: "Comoros" },
+            { code: "+682", name: "Cook Islands" },
+            { code: "+506", name: "Costa Rica" },
+            { code: "+225", name: "Cote d'Ivoire" },
+            { code: "+385", name: "Croatia" },
+            { code: "+53", name: "Cuba" },
+            { code: "+357", name: "Cyprus" },
+            { code: "+420", name: "Czech Republic" },
+            { code: "+243", name: "Dem. Rep. Congo" },
+            { code: "+45", name: "Denmark" },
+            { code: "+253", name: "Djibouti" },
+            { code: "+1809", name: "Dominica" },
+            { code: "+1809", name: "Dominican Rep." },
+            { code: "+599", name: "Dutch Antilles" },
+            { code: "+670", name: "East Timor" },
+            { code: "+593", name: "Ecuador" },
+            { code: "+20", name: "Egypt" },
+            { code: "+503", name: "El Salvador" },
+            { code: "+240", name: "Equatorial Guin" },
+            { code: "+291", name: "Eritrea" },
+            { code: "+372", name: "Estonia" },
+            { code: "+251", name: "Ethiopia" },
+            { code: "+500", name: "Falkland Island" },
+            { code: "+298", name: "Faroe Islands" },
+            { code: "+679", name: "Fiji" },
+            { code: "+358", name: "Finland" },
+            { code: "+33", name: "France" },
+            { code: "+689", name: "Fren. Polynesia" },
+            { code: "+594", name: "French Guiana" },
+            { code: "+262", name: "French S.Terr." },
+            { code: "+241", name: "Gabon" },
+            { code: "+220", name: "Gambia" },
+            { code: "+995", name: "Georgia" },
+            { code: "+49", name: "Germany" },
+            { code: "+233", name: "Ghana" },
+            { code: "+350", name: "Gibraltar" },
+            { code: "+30", name: "Greece" },
+            { code: "+299", name: "Greenland" },
+            { code: "+1809", name: "Grenada" },
+            { code: "+590", name: "Guadeloupe" },
+            { code: "+671", name: "Guam" },
+            { code: "+502", name: "Guatemala" },
+            { code: "+44", name: "Guernsey" },
+            { code: "+224", name: "Guinea" },
+            { code: "+245", name: "Guinea - Bissau" },
+            { code: "+592", name: "Guyana" },
+            { code: "+509", name: "Haiti" },
+            { code: "+504", name: "Honduras" },
+            { code: "+852", name: "Hong Kong" },
+            { code: "+36", name: "Hungary" },
+            { code: "+354", name: "Iceland" },
+            { code: "+91", name: "India" },
+            { code: "+62", name: "Indonesia" },
+            { code: "+964", name: "Iraq" },
+            { code: "+353", name: "Ireland" },
+            { code: "+44", name: "Isle of Man" },
+            { code: "+39", name: "Italy" },
+            { code: "+1809", name: "Jamaica" },
+            { code: "+81", name: "Japan" },
+            { code: "+44", name: "Jersey" },
+            { code: "+962", name: "Jordan" },
+            { code: "+7", name: "Kazakhstan" },
+            { code: "+254", name: "Kenya" },
+            { code: "+686", name: "Kiribati" },
+            { code: "+381", name: "Kosovo" },
+            { code: "+965", name: "Kuwait" },
+            { code: "+7", name: "Kyrgyzstan" },
+            { code: "+856", name: "Laos" },
+            { code: "+371", name: "Latvia" },
+            { code: "+961", name: "Lebanon" },
+            { code: "+266", name: "Lesotho" },
+            { code: "+231", name: "Liberia" },
+            { code: "+434", name: "Libya" },
+            { code: "+41", name: "Liechtenstein" },
+            { code: "+370", name: "Lithuania" },
+            { code: "+352", name: "Luxembourg" },
+            { code: "+853", name: "Macau" },
+            { code: "+389", name: "Macedonia" },
+            { code: "+261", name: "Madagascar" },
+            { code: "+265", name: "Malawi" },
+            { code: "+60", name: "Malaysia" },
+            { code: "+960", name: "Maldives" },
+            { code: "+223", name: "Mali" },
+            { code: "+356", name: "Malta" },
+            { code: "+692", name: "Marshall Island" },
+            { code: "+596", name: "Martinique" },
+            { code: "+222", name: "Mauretania" },
+            { code: "+230", name: "Mauritius" },
+            { code: "+269", name: "Mayotte" },
+            { code: "+52", name: "Mexico" },
+            { code: "+691", name: "Micronesia" },
+            { code: "+373", name: "Moldova" },
+            { code: "+377", name: "Monaco" },
+            { code: "+976", name: "Mongolia" },
+            { code: "+1809", name: "Montserrat" },
+            { code: "+212", name: "Morocco" },
+            { code: "+258", name: "Mozambique" },
+            { code: "+670", name: "N.Mariana Isla." },
+            { code: "+264", name: "Namibia" },
+            { code: "+674", name: "Nauru" },
+            { code: "+977", name: "Nepal" },
+            { code: "+31", name: "Netherlands" },
+            { code: "+687", name: "New Caledonia" },
+            { code: "+64", name: "New Zealand" },
+            { code: "+505", name: "Nicaragua" },
+            { code: "+227", name: "Niger" },
+            { code: "+234", name: "Nigeria" },
+            { code: "+683", name: "Niue" },
+            { code: "+6723", name: "Norfolk Islands" },
+            { code: "+850", name: "North Korea" },
+            { code: "+47", name: "Norway" },
+            { code: "+968", name: "Oman" },
+            { code: "+92", name: "Pakistan" },
+            { code: "+680", name: "Palau" },
+            { code: "+977", name: "Palestine" },
+            { code: "+507", name: "Panama" },
+            { code: "+675", name: "Papua N. Guinea" },
+            { code: "+595", name: "Paraguay" },
+            { code: "+51", name: "Peru" },
+            { code: "+63", name: "Philippines" },
+            { code: "+64", name: "Pitcairn Island" },
+            { code: "+48", name: "Poland" },
+            { code: "+351", name: "Portugal" },
+            { code: "+1809", name: "Puerto Rico" },
+            { code: "+974", name: "Qatar" },
+            { code: "+242", name: "Rep. of Congo" },
+            { code: "+262", name: "Reunion" },
+            { code: "+40", name: "Romania" },
+            { code: "+7", name: "Russian Fed." },
+            { code: "+250", name: "Rwanda" },
+            { code: "+500", name: "S. Sandwich Is." },
+            { code: "+239", name: "S.Tome Principe" },
+            { code: "+290", name: "Saint Helena" },
+            { code: "+685", name: "Samoa" },
+            { code: "+378", name: "San Marino" },
+            { code: "+221", name: "Senegal" },
+            { code: "+381", name: "Serbia/Monten." },
+            { code: "+248", name: "Seychelles" },
+            { code: "+232", name: "Sierra Leone" },
+            { code: "+65", name: "Singapore" },
+            { code: "+421", name: "Slovakia" },
+            { code: "+386", name: "Slovenia" },
+            { code: "+677", name: "Solomon Islands" },
+            { code: "+252", name: "Somalia" },
+            { code: "+27", name: "South Africa" },
+            { code: "+82", name: "South Korea" },
+            { code: "+211", name: "South Sudan" },
+            { code: "+34", name: "Spain" },
+            { code: "+94", name: "Sri Lanka" },
+            { code: "+1809", name: "St Kitts/Nevis" },
+            { code: "+1809", name: "St. Lucia" },
+            { code: "+1809", name: "St. Vincent" },
+            { code: "+508", name: "St.Pier Miquel." },
+            { code: "+249", name: "Sudan" },
+            { code: "+597", name: "Suriname" },
+            { code: "+47", name: "Svalbard" },
+            { code: "+268", name: "Swaziland" },
+            { code: "+46", name: "Sweden" },
+            { code: "+41", name: "Switzerland" },
+            { code: "+963", name: "Syria" },
+            { code: "+886", name: "Taiwan" },
+            { code: "+7", name: "Tajikistan" },
+            { code: "+255", name: "Tanzania" },
+            { code: "+66", name: "Thailand" },
+            { code: "+228", name: "Togo" },
+            { code: "+690", name: "Tokelau Islands" },
+            { code: "+676", name: "Tonga" },
+            { code: "+1809", name: "Trinidad Tobago" },
+            { code: "+216", name: "Tunisia" },
+            { code: "+90", name: "Turkey" },
+            { code: "+1809", name: "Turkish Caicos" },
+            { code: "+7", name: "Turkmenistan" },
+            { code: "+688", name: "Tuvalu" },
+            { code: "+1", name: "USA" },
+            { code: "+256", name: "Uganda" },
+            { code: "+38", name: "Ukraine" },
+            { code: "+971", name: "United Arab Emirates" },
+            { code: "+44", name: "United Kingdom" },
+            { code: "+598", name: "Uruguay" },
+            { code: "+7", name: "Uzbekistan" },
+            { code: "+678", name: "Vanuatu" },
+            { code: "+39", name: "Vatican City" },
+            { code: "+58", name: "Venezuela" },
+            { code: "+84", name: "Vietnam" },
+            { code: "+681", name: "Wallis Futuna" },
+            { code: "+212", name: "West Sahara" },
+            { code: "+967", name: "Yemen" },
+            { code: "+260", name: "Zambia" },
+            { code: "+263", name: "Zimbabwe" }
+        ];
+
+        const ALL_REGISTRATION_COUNTRIES = [
+            "Saudi Arabia", "Afghanistan", "Albania", "Algeria", "American Samoa", "American Virgin Islands",
+            "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua/Barbuda", "Argentina", "Armenia", "Aruba",
+            "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus",
+            "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia/Herz.", "Botswana",
+            "Bouvet Islands", "Brazil", "British Virgin Islands", "Brunei Daruss.", "Bulgaria", "Burkina Faso",
+            "Burma", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Ce. African. Re",
+            "Chad", "Chile", "China", "Christmas Isl.", "Coconut Islands", "Colombia", "Comoros", "Cook Islands",
+            "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Dem. Rep. Congo",
+            "Denmark", "Djibouti", "Dominica", "Dominican Rep.", "Dutch Antilles", "East Timor", "Ecuador",
+            "Egypt", "El Salvador", "Equatorial Guin", "Eritrea", "Estonia", "Ethiopia", "Falkland Island",
+            "Faroe Islands", "Fiji", "Finland", "France", "Fren. Polynesia", "French Guiana", "French S.Terr.",
+            "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada",
+            "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea - Bissau", "Guyana", "Haiti",
+            "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Isle of Man",
+            "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo",
+            "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
+            "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives",
+            "Mali", "Malta", "Marshall Island", "Martinique", "Mauretania", "Mauritius", "Mayotte", "Mexico",
+            "Micronesia", "Moldova", "Monaco", "Mongolia", "Montserrat", "Morocco", "Mozambique", "N.Mariana Isla.",
+            "Namibia", "Nauru", "Nepal", "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger",
+            "Nigeria", "Niue", "Norfolk Islands", "North Korea", "Norway", "Oman", "Pakistan", "Palau",
+            "Palestine", "Panama", "Papua N. Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn Island",
+            "Poland", "Portugal", "Puerto Rico", "Qatar", "Rep. of Congo", "Reunion", "Romania", "Russian Fed.",
+            "Rwanda", "S. Sandwich Is.", "S.Tome Principe", "Saint Helena", "Samoa", "San Marino", "Senegal",
+            "Serbia/Monten.", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+            "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "St Kitts/Nevis",
+            "St. Lucia", "St. Vincent", "St.Pier Miquel.", "Sudan", "Suriname", "Svalbard", "Swaziland", "Sweden",
+            "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tokelau Islands",
+            "Tonga", "Trinidad Tobago", "Tunisia", "Turkey", "Turkish Caicos", "Turkmenistan", "Tuvalu", "USA",
+            "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "Uruguay", "Uzbekistan", "Vanuatu",
+            "Vatican City", "Venezuela", "Vietnam", "Wallis Futuna", "West Sahara", "Yemen", "Zambia", "Zimbabwe"
+        ];
+
+        // In-memory cache for all uploaded files (Base64 data)
+        const fileCache = {};
+
+        // Helper to convert HTML5 File input to Base64
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve({
+                    filename: file.name,
+                    base64: reader.result
+                });
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Handle file browse event
+        async function handleFileSelect(input, labelId, cacheKey) {
+            const label = document.getElementById(labelId);
+            const statusText = label.querySelector('.file-status');
+            const file = input.files[0];
+            
+            if (file) {
+                statusText.innerText = `Selected: ${file.name}`;
+                statusText.classList.add('selected');
+                
+                try {
+                    const fileData = await readFileAsBase64(file);
+                    fileCache[cacheKey] = fileData;
+                    validatePercentage();
+                } catch (err) {
+                    console.error('File read error:', err);
+                    statusText.innerText = 'Error reading file';
+                    statusText.classList.remove('selected');
+                    validatePercentage();
+                }
+            } else {
+                statusText.innerText = 'Drag & Drop or Browse File';
+                statusText.classList.remove('selected');
+                delete fileCache[cacheKey];
+                validatePercentage();
+            }
+        }
+
+        // Dynamically populate prefix selects
+        function populatePrefixOptions(selectEl, defaultValue = "+966") {
+            selectEl.innerHTML = '';
+            ALL_COUNTRIES.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.code;
+                opt.innerText = `${c.code} (${c.name})`;
+                if (c.code === defaultValue) {
+                    opt.selected = true;
+                }
+                selectEl.appendChild(opt);
+            });
+        }
+
+        // Custom Premium Select Interactivity
+        function toggleCustomDropdown(id) {
+            const container = document.getElementById(id + 'Container') || document.getElementById(id).closest('.custom-select-container');
+            if (!container) return;
+            const isOpen = container.classList.contains('open');
+            
+            // Close all custom select dropdowns first
+            document.querySelectorAll('.custom-select-container').forEach(c => c.classList.remove('open'));
+            
+            if (!isOpen) {
+                container.classList.add('open');
+                // Auto focus the search input inside
+                const searchInput = container.querySelector('.custom-dropdown-search');
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchInput.focus();
+                    filterCustomDropdown(id, '');
+                }
+            }
+        }
+
+        const COUNTRY_PHONE_MAP = {
+            'Saudi Arabia': '+966',
+            'Algeria': '+213',
+            'United Kingdom': '+44',
+            'United States': '+1',
+            'Canada': '+1',
+            'France': '+33',
+            'Germany': '+49',
+            'United Arab Emirates': '+971',
+            'Egypt': '+20',
+            'Bahrain': '+973',
+            'Kuwait': '+965',
+            'Oman': '+968',
+            'Qatar': '+974',
+            'Jordan': '+962',
+            'Lebanon': '+961',
+            'Syria': '+963',
+            'Iraq': '+964',
+            'Morocco': '+212',
+            'Tunisia': '+216',
+            'Yemen': '+967',
+            'Sudan': '+249',
+            'Libya': '+218',
+            'Turkey': '+90',
+            'India': '+91',
+            'Pakistan': '+92'
+        };
+
+        function autoSyncMobilePrefix(countryId, countryVal) {
+            if (!COUNTRY_PHONE_MAP[countryVal]) return;
+            const prefixCode = COUNTRY_PHONE_MAP[countryVal];
+            
+            if (countryId === 'contactCountry') {
+                const prefixEl = document.getElementById('contactMobilePrefix');
+                if (prefixEl && prefixEl.value !== prefixCode) {
+                    prefixEl.value = prefixCode;
+                    prefixEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            } else if (countryId.startsWith('shCountry_')) {
+                const index = countryId.split('_')[1];
+                const prefixEl = document.getElementById(`shMobPrefix_${index}`);
+                if (prefixEl && prefixEl.value !== prefixCode) {
+                    prefixEl.value = prefixCode;
+                    prefixEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+        }
+
+        function selectCustomOption(id, val) {
+            const hiddenInput = document.getElementById(id);
+            if (hiddenInput) {
+                hiddenInput.value = val;
+                
+                // Automatically synchronize phone prefix if a country is chosen
+                autoSyncMobilePrefix(id, val);
+                
+                // Keep visual span synchronized
+                const valSpan = document.getElementById(id + 'Value');
+                if (valSpan) valSpan.innerText = val;
+                
+                // Synchronize class selection visuals
+                const optionsContainer = document.getElementById(id + 'Options');
+                if (optionsContainer) {
+                    Array.from(optionsContainer.children).forEach(child => {
+                        if (child.dataset.value === val || child.innerText === val) {
+                            child.classList.add('selected');
+                        } else {
+                            child.classList.remove('selected');
+                        }
+                    });
+                }
+                
+                // Fire custom change event to trigger validator
+                hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            
+            // Close the panel
+            const container = document.getElementById(id + 'Container') || (hiddenInput && hiddenInput.closest('.custom-select-container'));
+            if (container) container.classList.remove('open');
+        }
+
+        function filterCustomDropdown(id, query) {
+            const container = document.getElementById(id + 'Container') || document.getElementById(id).closest('.custom-select-container');
+            if (!container) return;
+            
+            const options = container.querySelectorAll('.custom-dropdown-option');
+            const q = query.toLowerCase().trim();
+            
+            options.forEach(opt => {
+                const text = opt.innerText.toLowerCase();
+                if (text.includes(q)) {
+                    opt.style.display = 'flex';
+                } else {
+                    opt.style.display = 'none';
+                }
+            });
+        }
+
+        // Intercept property changes on HTMLSelectElement value to visually synchronize custom dropdowns
+        const selectDescriptor = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+        Object.defineProperty(HTMLSelectElement.prototype, 'value', {
+            get() {
+                return selectDescriptor.get.call(this);
+            },
+            set(val) {
+                selectDescriptor.set.call(this, val);
+                
+                // Sync custom dropdown visuals
+                const id = this.id;
+                if (id) {
+                    const valSpan = document.getElementById(id + 'Value');
+                    if (valSpan && this.options[this.selectedIndex]) {
+                        valSpan.innerText = this.options[this.selectedIndex].text;
+                    }
+                    
+                    const optionsContainer = document.getElementById(id + 'Options');
+                    if (optionsContainer) {
+                        Array.from(optionsContainer.children).forEach(child => {
+                            if (child.dataset.value === val) {
+                                child.classList.add('selected');
+                            } else {
+                                child.classList.remove('selected');
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        // Generic Premium Select Auto-Converter
+        function convertNativeSelects() {
+            const selects = document.querySelectorAll('select:not(.converted-select)');
+            selects.forEach(selectEl => {
+                // Skip elements that are already custom-built or opted out
+                if (selectEl.classList.contains('sh-country') || selectEl.hasAttribute('data-no-convert')) {
+                    return;
+                }
+
+                selectEl.classList.add('converted-select');
+                selectEl.style.display = 'none'; // hide native
+
+                const id = selectEl.id || `genSelect_${Math.random().toString(36).substr(2, 9)}`;
+                if (!selectEl.id) selectEl.id = id;
+
+                // Create container
+                const container = document.createElement('div');
+                container.className = 'custom-select-container';
+                container.id = `${id}Container`;
+                
+                if (selectEl.style.flexGrow) container.style.flexGrow = selectEl.style.flexGrow;
+                if (selectEl.style.width) container.style.width = selectEl.style.width;
+
+                // Get initial text
+                let initialText = '[Select Option]';
+                const selectedOpt = selectEl.options[selectEl.selectedIndex];
+                if (selectedOpt) {
+                    initialText = selectedOpt.text;
+                }
+
+                // Build custom DOM structure
+                container.innerHTML = `
+                    <div class="custom-select-trigger" onclick="toggleCustomDropdown('${id}')">
+                        <span id="${id}Value">${initialText}</span>
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="custom-dropdown-panel" id="${id}Panel">
+                        <input type="text" class="custom-dropdown-search" placeholder="Search..." oninput="filterCustomDropdown('${id}', this.value)">
+                        <div class="custom-dropdown-options" id="${id}Options"></div>
+                    </div>
+                `;
+
+                // Insert container after native select
+                selectEl.parentNode.insertBefore(container, selectEl.nextSibling);
+
+                // Populate options
+                updateCustomSelectOptions(selectEl);
+
+                // Observe mutations if the options are changed dynamically later (like dynamic cities lists)
+                const observer = new MutationObserver(() => {
+                    updateCustomSelectOptions(selectEl);
+                });
+                observer.observe(selectEl, { childList: true });
+            });
+        }
+
+        // Helper to update options list from native select
+        function updateCustomSelectOptions(selectEl) {
+            const id = selectEl.id;
+            const optionsContainer = document.getElementById(`${id}Options`);
+            if (!optionsContainer) return;
+
+            optionsContainer.innerHTML = '';
+            const currentValue = selectEl.value;
+
+            Array.from(selectEl.options).forEach(opt => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'custom-dropdown-option';
+                optDiv.dataset.value = opt.value;
+                optDiv.innerText = opt.text;
+                if (opt.value === currentValue) {
+                    optDiv.classList.add('selected');
+                }
+                optDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    selectEl.value = opt.value;
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                    selectEl.dispatchEvent(new Event('input', { bubbles: true }));
+                };
+                optionsContainer.appendChild(optDiv);
+            });
+
+            // Update visual span
+            const valSpan = document.getElementById(`${id}Value`);
+            if (valSpan && selectEl.options[selectEl.selectedIndex]) {
+                valSpan.innerText = selectEl.options[selectEl.selectedIndex].text;
+            }
+        }
+
+        // Close custom select dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-select-container')) {
+                document.querySelectorAll('.custom-select-container').forEach(c => c.classList.remove('open'));
+            }
+        });
+
+        // On Page Load, load default prefix lists and shareholders
+        window.addEventListener('DOMContentLoaded', () => {
+            // Populate ISIC codes datalist (shared by all dynamic ISIC rows)
+            const isicDatalist = document.getElementById('isicDatalist');
+            if (isicDatalist) {
+                ALL_ISIC_CODES.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.code;
+                    opt.label = `${item.code} - ${item.name}`;
+                    isicDatalist.appendChild(opt);
+                });
+            }
+
+            // Populate country datalist (used by Person shareholder nationality/country inputs)
+            const countryDl = document.getElementById('countryDatalist');
+            if (countryDl) {
+                ALL_REGISTRATION_COUNTRIES.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    countryDl.appendChild(opt);
+                });
+            }
+
+            // Seed one default ISIC row on first load (before config override below)
+            addIsicRow('C251114');
+
+            // Override value getter/setter for the country hidden inputs to keep config load & state-monitoring fully transparent
+            const hiddenInputs = ['country', 'contactNationality', 'contactCountry'];
+            hiddenInputs.forEach(id => {
+                const hiddenInput = document.getElementById(id);
+                if (hiddenInput) {
+                    const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+                    Object.defineProperty(hiddenInput, 'value', {
+                        get() {
+                            return descriptor.get.call(this);
+                        },
+                        set(val) {
+                            descriptor.set.call(this, val);
+                            
+                            // Automatically synchronize prefix on programmatic config sets
+                            autoSyncMobilePrefix(id, val);
+                            
+                            // Update visual text in trigger
+                            const valSpan = document.getElementById(id + 'Value');
+                            if (valSpan) valSpan.innerText = val || '[Select Country]';
+                            
+                            // Visual active selection update
+                            const optionsContainer = document.getElementById(id + 'Options');
+                            if (optionsContainer) {
+                                Array.from(optionsContainer.children).forEach(child => {
+                                    if (child.dataset.value === val) {
+                                        child.classList.add('selected');
+                                    } else {
+                                        child.classList.remove('selected');
+                                    }
+                                });
+                            }
+                            
+                            // Bubble up change event for validator
+                            this.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    });
+                }
+            });
+
+            // Populate Registration Country, Contact Nationality, and Contact Country custom select option lists
+            ['country', 'contactNationality', 'contactCountry'].forEach(id => {
+                const optionsContainer = document.getElementById(id + 'Options');
+                if (optionsContainer) {
+                    optionsContainer.innerHTML = '';
+                    ALL_REGISTRATION_COUNTRIES.forEach(c => {
+                        const optDiv = document.createElement('div');
+                        optDiv.className = 'custom-dropdown-option';
+                        optDiv.dataset.value = c;
+                        optDiv.innerText = c;
+                        optDiv.onclick = (e) => {
+                            e.stopPropagation();
+                            selectCustomOption(id, c);
+                        };
+                        optionsContainer.appendChild(optDiv);
+                    });
+                }
+            });
+
+            populatePrefixOptions(document.getElementById('entityMobilePrefix'), '+213');
+            populatePrefixOptions(document.getElementById('contactMobilePrefix'), '+213');
+
+            // Upgrade all native selects on the page dynamically
+            convertNativeSelects();
+
+            // Load saved config dynamically if available
+            fetch('/api/config')
+                .then(response => {
+                    if (response.ok) return response.json();
+                    throw new Error('Config load failed');
+                })
+                .then(config => {
+                    if (!config) return;
+                    console.log('Pre-populating dashboard from loaded config:', config);
+                    
+                    // Simple input fields mapping
+                    const textKeys = [
+                        'regTitle', 'firstName', 'lastName', 'nationalId', 'companyName', 'sector', 'targetEmail', 'country',
+                        'regMobile', 'credsUsername', 'credsPassword', 'entityNameEnglish', 'entityNameArabic',
+                        'legalStatus', 'capital', 'region', 'city', 'investmentSpending', 'entityEmail', 'entityMobile',
+                        'contactTitle', 'contactFullNameEn', 'contactFirstNameAr', 'contactLastNameAr', 'contactNationality',
+                        'contactPassportNumber', 'contactDobDay', 'contactDobMonth', 'contactDobYear',
+                        'contactIssueDay', 'contactIssueMonth', 'contactIssueYear',
+                        'contactExpiryDay', 'contactExpiryMonth', 'contactExpiryYear',
+                        'contactCountry', 'contactCity', 'contactMobilePrefix', 'contactMobile', 'contactEmail'
+                    ];
+                    
+                    textKeys.forEach(key => {
+                        const el = document.getElementById(key);
+                        if (el && config[key] !== undefined && config[key] !== null) {
+                            el.value = config[key];
+                        }
+                    });
+
+                    // Restore ISIC codes from saved config (supports both array and legacy single value)
+                    const isicContainer = document.getElementById('isicCodeList');
+                    if (isicContainer) {
+                        if (config.isicCodes && Array.isArray(config.isicCodes) && config.isicCodes.length > 0) {
+                            isicContainer.innerHTML = '';
+                            config.isicCodes.forEach(code => addIsicRow(code));
+                        } else if (config.isicCode) {
+                            isicContainer.innerHTML = '';
+                            addIsicRow(config.isicCode);
+                        }
+                    }
+
+                    // Update phone group prefixes visually
+                    if (config.entityMobilePrefix) populatePrefixOptions(document.getElementById('entityMobilePrefix'), config.entityMobilePrefix);
+                    if (config.contactMobilePrefix) populatePrefixOptions(document.getElementById('contactMobilePrefix'), config.contactMobilePrefix);
+
+                    // Show file upload status for previously saved absolute paths
+                    if (config.entityCRFile) {
+                        document.querySelector('#entityCRLabel .file-status').innerText = '✓ Loaded: ' + config.entityCRFile.split(/[\\/]/).pop();
+                        document.querySelector('#entityCRLabel').classList.add('selected');
+                        fileCache['entityCRFile'] = config.entityCRFile; // hold path reference
+                    }
+                    if (config.entityFSFile) {
+                        document.querySelector('#entityFSLabel .file-status').innerText = '✓ Loaded: ' + config.entityFSFile.split(/[\\/]/).pop();
+                        document.querySelector('#entityFSLabel').classList.add('selected');
+                        fileCache['entityFSFile'] = config.entityFSFile; // hold path reference
+                    }
+
+                    // Pre-populate shareholders
+                    if (config.shareholders && Array.isArray(config.shareholders) && config.shareholders.length > 0) {
+                        document.getElementById('shareholderList').innerHTML = '';
+                        config.shareholders.forEach((sh, i) => {
+                            addShareholderCard(sh);
+                            const idx = i + 1;
+                            const setFile = (labelId, cacheKey, path) => {
+                                if (!path) return;
+                                const lbl = document.querySelector(`#${labelId} .file-status`);
+                                if (lbl) { lbl.innerText = '✓ Loaded: ' + path.split(/[\\/]/).pop(); document.getElementById(labelId)?.classList.add('selected'); }
+                                fileCache[cacheKey] = path;
+                            };
+                            if (sh.type === 'Person') {
+                                setFile(`shPassportLabel_${idx}`, `sh_${idx}_passport`, sh.passportFile);
+                            } else {
+                                setFile(`shCRLabel_${idx}`,     `sh_${idx}_cr`,     sh.crFile);
+                                setFile(`shFSLabel_${idx}`,     `sh_${idx}_fs`,     sh.fsFile);
+                                setFile(`shOther1Label_${idx}`, `sh_${idx}_other1`, sh.other1File);
+                                setFile(`shOther2Label_${idx}`, `sh_${idx}_other2`, sh.other2File);
+                            }
+                        });
+                    }
+                    validatePercentage();
+                })
+                .catch(err => {
+                    console.log('No previous saved configuration loaded. Using defaults.', err);
+                    // Add default cards if no config is loaded
+                    addShareholderCard({ percentage: '40', nameEng: 'Alpha Tech Shareholder 1 Ltd', nameAr: 'ألفا شريك تقني الأول المحدودة', country: 'Algeria', email: 'shareholder1@alphatech.com', mobile: '500000001' });
+                    addShareholderCard({ percentage: '60', nameEng: 'Alpha Tech Shareholder 2 Ltd', nameAr: 'ألفا شريك تقني الثاني المحدودة', country: 'Algeria', email: 'shareholder2@alphatech.com', mobile: '500000002' });
+                    validatePercentage();
+                });
+        });
+
+        // Function to dynamically add a Shareholder form card
+        function addShareholderCard(sh = {}) {
+            const list = document.getElementById('shareholderList');
+            const cardCount = list.children.length;
+            const index = cardCount + 1;
+            const type = (sh.type || 'Organization');  // 'Organization' | 'Person'
+
+            const card = document.createElement('div');
+            card.className = 'shareholder-card';
+            card.id = `shCard_${index}`;
+
+            // ── Organization defaults ───────────────────────────────────────
+            const pct     = sh.percentage || '';
+            const eng     = sh.nameEng || '';
+            const ar      = sh.nameAr || '';
+            const country = sh.country || 'Algeria';
+            const unified = sh.unifiedNumber || '';
+            const legal   = sh.legalStatus || 'Limited Liability Company';
+            const years   = sh.years !== undefined ? sh.years : '';
+            const email   = sh.email || '';
+            const mobPrefix = sh.mobilePrefix || '+213';
+            const mobNum  = sh.mobile || '';
+            const web     = sh.website || 'https://www.alphatech.com';
+
+            // ── Person defaults ─────────────────────────────────────────────
+            const pTitle      = sh.title || 'Mr.';
+            const pFirstAr    = sh.firstNameAr || sh.nameAr || '';
+            const pLastAr     = sh.lastNameAr  || '';
+            const pFullEn     = sh.fullNameEn  || sh.nameEng || '';
+            const pPassNum    = sh.passportNumber || '';
+            const pNat        = sh.nationality || sh.country || 'Algeria';
+            const pCountry    = sh.country || 'Algeria';
+            const pCity       = sh.city || '';
+            const pProfLic    = sh.professionalLicense || 'No';
+            const pPlaceBirth = sh.placeOfBirth || '';
+            const pEmail      = sh.email || '';
+            const pMobPfx     = sh.mobilePrefix || '+213';
+            const pMob        = sh.mobile || '';
+            const pDobD = sh.dobDay || ''; const pDobM = sh.dobMonth || ''; const pDobY = sh.dobYear || ''; const pDobC = sh.dobCalendar || 'Gregorian';
+            const pIssD = sh.issueDay || ''; const pIssM = sh.issueMonth || ''; const pIssY = sh.issueYear || ''; const pIssC = sh.issueCalendar || 'Gregorian';
+            const pExpD = sh.expiryDay || ''; const pExpM = sh.expiryMonth || ''; const pExpY = sh.expiryYear || ''; const pExpC = sh.expiryCalendar || 'Gregorian';
+
+            const orgVisible    = type === 'Organization' ? 'visible' : '';
+            const personVisible = type === 'Person'       ? 'visible' : '';
+            const orgActive     = type === 'Organization' ? 'active' : '';
+            const personActive  = type === 'Person'       ? 'active' : '';
+
+            const uploadSVG = `<svg class="upload-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>`;
+
+            card.innerHTML = `
+                <button type="button" class="remove-sh-btn" onclick="removeShareholderCard(${index})">Remove</button>
+                <span class="sh-index">Shareholder #${index}</span>
+
+                <!-- Type toggle -->
+                <div class="sh-type-tabs">
+                    <button type="button" class="sh-type-btn ${orgActive}" onclick="toggleShType(${index},'Organization')">Organization</button>
+                    <button type="button" class="sh-type-btn ${personActive}" onclick="toggleShType(${index},'Person')">Person</button>
+                </div>
+                <input type="hidden" class="sh-type-val" value="${type}">
+
+                <div class="form-grid">
+                <!-- ════════════════════════ ORGANIZATION SECTION ════════════════════════ -->
+                <div class="sh-org-section ${orgVisible}" style="display:${type==='Organization'?'contents':'none'}">
+                    <div class="form-group">
+                        <label>Share Percentage (%) <span class="required-asterisk">*</span></label>
+                        <input type="number" class="sh-pct-input" value="${pct}" placeholder="e.g. 50" oninput="validatePercentage()" min="1" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Organization Name (English) <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-name-eng" value="${eng}" placeholder="Shareholder Eng Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Organization Name (Arabic) <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-name-ar" value="${ar}" placeholder="اسم الشريك بالعربية">
+                    </div>
+                    <div class="form-group">
+                        <label>Country of Origin <span class="required-asterisk">*</span></label>
+                        <div class="custom-select-container" id="shCountryContainer_${index}">
+                            <div class="custom-select-trigger" onclick="toggleCustomDropdown('shCountry_${index}')">
+                                <span id="shCountry_${index}Value">${country}</span>
+                                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                            <div class="custom-dropdown-panel" id="shCountry_${index}Panel">
+                                <input type="text" class="custom-dropdown-search" placeholder="Search country..." oninput="filterCustomDropdown('shCountry_${index}', this.value)">
+                                <div class="custom-dropdown-options" id="shCountry_${index}Options">
+                                    ${ALL_REGISTRATION_COUNTRIES.map(c => `<div class="custom-dropdown-option ${c === country ? 'selected' : ''}" data-value="${c}" onclick="selectCustomOption('shCountry_${index}', '${c}')">${c}</div>`).join('')}
+                                </div>
+                            </div>
+                            <input type="hidden" class="sh-country" id="shCountry_${index}" value="${country}" onchange="validatePercentage()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Unified Number</label>
+                        <input type="text" class="sh-unified" value="${unified}" placeholder="Leave empty for dynamic auto-generation">
+                    </div>
+                    <div class="form-group">
+                        <label>Legal Status <span class="required-asterisk">*</span></label>
+                        <select class="sh-legal">
+                            <option value="Limited Liability Company" ${legal==='Limited Liability Company'?'selected':''}>Limited Liability Company</option>
+                            <option value="Simple Limited Partnership" ${legal==='Simple Limited Partnership'?'selected':''}>Simple Limited Partnership</option>
+                            <option value="Joint Stock Company" ${legal==='Joint Stock Company'?'selected':''}>Joint Stock Company</option>
+                            <option value="Branch of a Foreign Company" ${legal==='Branch of a Foreign Company'?'selected':''}>Branch of a Foreign Company</option>
+                            <option value="General Partnership" ${legal==='General Partnership'?'selected':''}>General Partnership</option>
+                            <option value="Simplified Joint Stock Company" ${legal==='Simplified Joint Stock Company'?'selected':''}>Simplified Joint Stock Company</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Years Established</label>
+                        <select class="sh-years">
+                            <option value="" ${years===''?'selected':''}>[Skip / Not Specified]</option>
+                            <option value="(1-5)" ${years==='(1-5)'?'selected':''}>(1-5)</option>
+                            <option value="(5-10)" ${years==='(5-10)'?'selected':''}>(5-10)</option>
+                            <option value="More than 10 years" ${years==='More than 10 years'?'selected':''}>More than 10 years</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address <span class="required-asterisk">*</span></label>
+                        <input type="email" class="sh-email" value="${email}" placeholder="Shareholder Email">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number <span class="required-asterisk">*</span></label>
+                        <div class="phone-group">
+                            <select class="sh-mob-prefix" id="shMobPrefix_${index}"></select>
+                            <input type="text" class="sh-mob" value="${mobNum}" placeholder="e.g. 512345678">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Website URL <span class="required-asterisk">*</span></label>
+                        <input type="url" class="sh-web" value="${web}">
+                    </div>
+                    <!-- Organization Attachments -->
+                    <div class="form-group file-upload-container">
+                        <label>Commercial Registration Copy <span class="required-asterisk">*</span></label>
+                        <label class="file-upload-box" id="shCRLabel_${index}">${uploadSVG}<span class="file-status">Drag & Drop or Browse File</span><input type="file" onchange="handleFileSelect(this,'shCRLabel_${index}','sh_${index}_cr')"></label>
+                    </div>
+                    <div class="form-group file-upload-container">
+                        <label>Last Year Financial Statement <span class="required-asterisk">*</span></label>
+                        <label class="file-upload-box" id="shFSLabel_${index}">${uploadSVG}<span class="file-status">Drag & Drop or Browse File</span><input type="file" onchange="handleFileSelect(this,'shFSLabel_${index}','sh_${index}_fs')"></label>
+                    </div>
+                    <div class="form-group file-upload-container">
+                        <label>Other Attachment 1</label>
+                        <label class="file-upload-box" id="shOther1Label_${index}">${uploadSVG}<span class="file-status">Drag & Drop or Browse File</span><input type="file" onchange="handleFileSelect(this,'shOther1Label_${index}','sh_${index}_other1')"></label>
+                    </div>
+                    <div class="form-group file-upload-container">
+                        <label>Other Attachment 2</label>
+                        <label class="file-upload-box" id="shOther2Label_${index}">${uploadSVG}<span class="file-status">Drag & Drop or Browse File</span><input type="file" onchange="handleFileSelect(this,'shOther2Label_${index}','sh_${index}_other2')"></label>
+                    </div>
+                </div><!-- /org-section -->
+
+                <!-- ════════════════════════ PERSON SECTION ════════════════════════════ -->
+                <div class="sh-person-section ${personVisible}" style="display:${type==='Person'?'contents':'none'}">
+                    <div class="form-group">
+                        <label>Share Percentage (%) <span class="required-asterisk">*</span></label>
+                        <input type="number" class="sh-pct-input" value="${pct}" placeholder="e.g. 100" oninput="validatePercentage()" min="1" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Title <span class="required-asterisk">*</span></label>
+                        <select class="sh-p-title">
+                            <option value="Mr." ${pTitle==='Mr.'?'selected':''}>Mr.</option>
+                            <option value="Mrs." ${pTitle==='Mrs.'?'selected':''}>Mrs.</option>
+                            <option value="Ms." ${pTitle==='Ms.'?'selected':''}>Ms.</option>
+                            <option value="Dr." ${pTitle==='Dr.'?'selected':''}>Dr.</option>
+                            <option value="Prof." ${pTitle==='Prof.'?'selected':''}>Prof.</option>
+                            <option value="Eng." ${pTitle==='Eng.'?'selected':''}>Eng.</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>First Name in Arabic <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-p-first-ar" value="${pFirstAr}" placeholder="الاسم الأول والأوسط">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name in Arabic <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-p-last-ar" value="${pLastAr}" placeholder="اسم العائلة">
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name in English <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-p-full-en" value="${pFullEn}" placeholder="Full legal name in English">
+                    </div>
+                    <div class="form-group">
+                        <label>Passport Number <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-p-passport" value="${pPassNum}" placeholder="e.g. A12345678">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Nationality <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-p-nationality" value="${pNat}" placeholder="e.g. Algeria" list="countryDatalist">
+                    </div>
+                    <div class="form-group">
+                        <label>Country <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-p-country" value="${pCountry}" placeholder="e.g. Algeria" list="countryDatalist">
+                    </div>
+                    <div class="form-group">
+                        <label>City <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-p-city" value="${pCity}" placeholder="e.g. Riyadh">
+                    </div>
+                    <div class="form-group">
+                        <label>Professional License <span class="required-asterisk">*</span></label>
+                        <select class="sh-p-prof-license">
+                            <option value="No" ${pProfLic==='No'?'selected':''}>No</option>
+                            <option value="Yes" ${pProfLic==='Yes'?'selected':''}>Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Place of Birth <span class="required-asterisk">*</span></label>
+                        <input type="text" class="sh-p-place-birth" value="${pPlaceBirth}" placeholder="e.g. Algiers">
+                    </div>
+                    <div class="form-group">
+                        <label>Email <span class="required-asterisk">*</span></label>
+                        <input type="email" class="sh-p-email" value="${pEmail}" placeholder="person@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number <span class="required-asterisk">*</span></label>
+                        <div class="phone-group">
+                            <select class="sh-p-mob-prefix" id="shPMobPrefix_${index}"></select>
+                            <input type="text" class="sh-p-mob" value="${pMob}" placeholder="e.g. 512345678">
+                        </div>
+                    </div>
+                    <!-- Date of Birth -->
+                    <div class="form-group" style="grid-column: 1 / -1">
+                        <label>Date of Birth <span class="required-asterisk">*</span></label>
+                        <div class="sh-date-group">
+                            <input type="text" class="sh-p-dob-d" value="${pDobD}" placeholder="Day (e.g. 15)">
+                            <input type="text" class="sh-p-dob-m" value="${pDobM}" placeholder="Month (e.g. March)">
+                            <input type="text" class="sh-p-dob-y" value="${pDobY}" placeholder="Year (e.g. 1990)">
+                            <select class="sh-p-dob-cal" data-no-convert>
+                                <option value="Gregorian" ${pDobC==='Gregorian'?'selected':''}>Gregorian</option>
+                                <option value="Hijri" ${pDobC==='Hijri'?'selected':''}>Hijri</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Passport Issue Date -->
+                    <div class="form-group" style="grid-column: 1 / -1">
+                        <label>Passport Issue Date <span class="required-asterisk">*</span></label>
+                        <div class="sh-date-group">
+                            <input type="text" class="sh-p-iss-d" value="${pIssD}" placeholder="Day">
+                            <input type="text" class="sh-p-iss-m" value="${pIssM}" placeholder="Month">
+                            <input type="text" class="sh-p-iss-y" value="${pIssY}" placeholder="Year">
+                            <select class="sh-p-iss-cal" data-no-convert>
+                                <option value="Gregorian" ${pIssC==='Gregorian'?'selected':''}>Gregorian</option>
+                                <option value="Hijri" ${pIssC==='Hijri'?'selected':''}>Hijri</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Passport Expiry Date -->
+                    <div class="form-group" style="grid-column: 1 / -1">
+                        <label>Passport Expiry Date <span class="required-asterisk">*</span></label>
+                        <div class="sh-date-group">
+                            <input type="text" class="sh-p-exp-d" value="${pExpD}" placeholder="Day">
+                            <input type="text" class="sh-p-exp-m" value="${pExpM}" placeholder="Month">
+                            <input type="text" class="sh-p-exp-y" value="${pExpY}" placeholder="Year">
+                            <select class="sh-p-exp-cal" data-no-convert>
+                                <option value="Gregorian" ${pExpC==='Gregorian'?'selected':''}>Gregorian</option>
+                                <option value="Hijri" ${pExpC==='Hijri'?'selected':''}>Hijri</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Passport / License Copy Upload -->
+                    <div class="form-group file-upload-container">
+                        <label>Passport / License Copy <span class="required-asterisk">*</span></label>
+                        <label class="file-upload-box" id="shPassportLabel_${index}">${uploadSVG}<span class="file-status">Drag & Drop or Browse File</span><input type="file" onchange="handleFileSelect(this,'shPassportLabel_${index}','sh_${index}_passport')"></label>
+                    </div>
+                </div><!-- /person-section -->
+                </div><!-- /form-grid -->
+            `;
+            list.appendChild(card);
+
+            // Populate mobile prefix selectors
+            populatePrefixOptions(document.getElementById(`shMobPrefix_${index}`), mobPrefix);
+            populatePrefixOptions(document.getElementById(`shPMobPrefix_${index}`), pMobPfx);
+
+            validatePercentage();
+            convertNativeSelects();
+        }
+
+        // Toggle shareholder type (Organization ↔ Person)
+        function toggleShType(index, type) {
+            const card = document.getElementById(`shCard_${index}`);
+            if (!card) return;
+            card.querySelector('.sh-type-val').value = type;
+            // Update tab active state
+            card.querySelectorAll('.sh-type-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.trim() === type);
+            });
+            // Show/hide sections using inline display (display:contents is the "visible" mode)
+            const orgSec  = card.querySelector('.sh-org-section');
+            const persSec = card.querySelector('.sh-person-section');
+            if (orgSec)  orgSec.style.display  = type === 'Organization' ? 'contents' : 'none';
+            if (persSec) persSec.style.display  = type === 'Person'       ? 'contents' : 'none';
+            // Keep both pct inputs in sync so switching type never loses the value
+            const pctInputs = Array.from(card.querySelectorAll('.sh-pct-input'));
+            if (pctInputs.length > 1) {
+                const val = pctInputs.find(inp => inp.value !== '')?.value || '';
+                pctInputs.forEach(inp => inp.value = val);
+            }
+            validatePercentage();
+        }
+
+        // Function to remove a shareholder card
+        function removeShareholderCard(index) {
+            const card = document.getElementById(`shCard_${index}`);
+            if (card) {
+                card.remove();
+                
+                // Remove dynamic cached base64 file payloads for deleted shareholder
+                delete fileCache[`sh_${index}_cr`];
+                delete fileCache[`sh_${index}_fs`];
+                delete fileCache[`sh_${index}_other1`];
+                delete fileCache[`sh_${index}_other2`];
+                delete fileCache[`sh_${index}_passport`];
+
+                // Re-index remaining cards for visual correctness
+                const list = document.getElementById('shareholderList');
+                Array.from(list.children).forEach((child, idx) => {
+                    const newIdx = idx + 1;
+                    child.id = `shCard_${newIdx}`;
+                    child.querySelector('.sh-index').innerText = `Shareholder #${newIdx}`;
+                    child.querySelector('.remove-sh-btn').setAttribute('onclick', `removeShareholderCard(${newIdx})`);
+                });
+            }
+            validatePercentage();
+        }
+
+        // Validate that total percentage adds up to exactly 100% and all required fields are filled
+        function validatePercentage() {
+            // Count only the pct input from the *active* section of each card to avoid double-counting
+            let sum = 0;
+            document.querySelectorAll('.shareholder-card').forEach(card => {
+                const shType = (card.querySelector('.sh-type-val') || {}).value || 'Organization';
+                const activeSec = card.querySelector(shType === 'Person' ? '.sh-person-section' : '.sh-org-section');
+                const pctInput  = activeSec ? activeSec.querySelector('.sh-pct-input') : card.querySelector('.sh-pct-input');
+                if (pctInput) {
+                    const val = parseFloat(pctInput.value);
+                    if (!isNaN(val)) sum += val;
+                }
+            });
+
+            const totalSpan = document.getElementById('totalPercent');
+            const statusSpan = document.getElementById('validatorStatus');
+            const bar = document.getElementById('validatorBar');
+            const runBtn = document.getElementById('runBtn');
+
+            totalSpan.innerText = sum + '%';
+
+            if (sum !== 100) {
+                bar.className = 'validator-bar validator-invalid';
+                statusSpan.innerText = 'Total shareholder percentages must add up to exactly 100% (currently ' + sum + '%).';
+                runBtn.disabled = true;
+                return false;
+            }
+
+            // Validate Required Text & Select fields
+            const requiredIds = [
+                'firstName', 'lastName', 'targetEmail', 'country', 'regMobile',
+                'credsUsername', 'credsPassword',
+                'entityNameEnglish', 'entityNameArabic', 'legalStatus', 'capital', 'region', 'city', 'investmentSpending',
+                'entityEmail', 'entityMobile',
+                'contactFullNameEn', 'contactFirstNameAr', 'contactLastNameAr', 'contactNationality', 'contactPassportNumber',
+                'contactDobDay', 'contactDobMonth', 'contactDobYear',
+                'contactIssueDay', 'contactIssueMonth', 'contactIssueYear',
+                'contactExpiryDay', 'contactExpiryMonth', 'contactExpiryYear',
+                'contactCountry', 'contactCity', 'contactEmail', 'contactMobile'
+            ];
+
+            let missingFields = [];
+            requiredIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && (!el.value || el.value.trim() === '')) {
+                    const label = document.querySelector(`label[for="${id}"]`) || el.parentElement.querySelector('label');
+                    const labelText = label ? label.innerText.replace('*', '').trim() : id;
+                    missingFields.push(labelText);
+                }
+            });
+
+            // Validate at least one ISIC code is filled
+            const isicInputs = document.querySelectorAll('.isic-code-input');
+            const hasIsic = Array.from(isicInputs).some(el => el.value && el.value.trim() !== '');
+            if (!hasIsic) missingFields.push('Business Activity ISIC Code (at least one required)');
+
+            // Validate Required Entity Upload Files
+            if (!fileCache['entityCRFile']) {
+                missingFields.push('Entity CR Copy File');
+            }
+            if (!fileCache['entityFSFile']) {
+                missingFields.push('Entity FS Copy File');
+            }
+
+            // Validate Required Shareholder Inputs & Upload Files
+            const shCards = document.querySelectorAll('.shareholder-card');
+            shCards.forEach((card, idx) => {
+                const index = idx + 1;
+                const shType = (card.querySelector('.sh-type-val') || {}).value || 'Organization';
+
+                if (shType === 'Person') {
+                    const v = (cls) => { const el = card.querySelector(cls); return el ? el.value.trim() : ''; };
+                    if (!v('.sh-p-first-ar'))   missingFields.push(`Shareholder #${index} First Name (Arabic)`);
+                    if (!v('.sh-p-last-ar'))    missingFields.push(`Shareholder #${index} Last Name (Arabic)`);
+                    if (!v('.sh-p-full-en'))    missingFields.push(`Shareholder #${index} Full Name (English)`);
+                    if (!v('.sh-p-passport'))   missingFields.push(`Shareholder #${index} Passport Number`);
+                    if (!v('.sh-p-nationality')) missingFields.push(`Shareholder #${index} Nationality`);
+                    if (!v('.sh-p-country'))    missingFields.push(`Shareholder #${index} Country`);
+                    if (!v('.sh-p-place-birth')) missingFields.push(`Shareholder #${index} Place of Birth`);
+                    if (!v('.sh-p-email'))      missingFields.push(`Shareholder #${index} Email`);
+                    if (!v('.sh-p-mob'))        missingFields.push(`Shareholder #${index} Mobile`);
+                    if (!v('.sh-p-dob-d') || !v('.sh-p-dob-m') || !v('.sh-p-dob-y')) missingFields.push(`Shareholder #${index} Date of Birth`);
+                    if (!v('.sh-p-iss-d') || !v('.sh-p-iss-m') || !v('.sh-p-iss-y')) missingFields.push(`Shareholder #${index} Passport Issue Date`);
+                    if (!v('.sh-p-exp-d') || !v('.sh-p-exp-m') || !v('.sh-p-exp-y')) missingFields.push(`Shareholder #${index} Passport Expiry Date`);
+                    if (!fileCache[`sh_${index}_passport`]) missingFields.push(`Shareholder #${index} Passport/License Copy`);
+                } else {
+                    const nameEng  = card.querySelector('.sh-name-eng')?.value || '';
+                    const nameAr   = card.querySelector('.sh-name-ar')?.value || '';
+                    const shCountry= card.querySelector('.sh-country')?.value || '';
+                    const email    = card.querySelector('.sh-email')?.value || '';
+                    const mobile   = card.querySelector('.sh-mob')?.value || '';
+
+                    if (!nameEng.trim())   missingFields.push(`Shareholder #${index} Name (English)`);
+                    if (!nameAr.trim())    missingFields.push(`Shareholder #${index} Name (Arabic)`);
+                    if (!shCountry.trim()) missingFields.push(`Shareholder #${index} Country`);
+                    if (!email.trim())     missingFields.push(`Shareholder #${index} Email`);
+                    if (!mobile.trim())    missingFields.push(`Shareholder #${index} Mobile`);
+                    if (!fileCache[`sh_${index}_cr`]) missingFields.push(`Shareholder #${index} CR Copy File`);
+                    if (!fileCache[`sh_${index}_fs`]) missingFields.push(`Shareholder #${index} FS Copy File`);
+                }
+            });
+
+            if (missingFields.length > 0) {
+                bar.className = 'validator-bar validator-invalid';
+                statusSpan.innerText = 'Missing Required Fields: ' + missingFields.slice(0, 2).join(', ') + (missingFields.length > 2 ? ` and ${missingFields.length - 2} more...` : '');
+                runBtn.disabled = true;
+                return false;
+            }
+
+            bar.className = 'validator-bar validator-valid';
+            statusSpan.innerText = 'All required variables present. System ready to run automation!';
+            runBtn.disabled = false;
+            return true;
+        }
+
+        // Attach listeners for dynamic input field changes to keep validation up to date in real time
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.addEventListener('input', validatePercentage);
+            document.body.addEventListener('change', validatePercentage);
+        });
+
+        // ── ISIC Code dynamic list ────────────────────────────────────────────
+
+        /**
+         * Append a new ISIC code row to the list.
+         * @param {string|{code:string}} code  Optional pre-fill value.
+         */
+        function addIsicRow(code) {
+            const list = document.getElementById('isicCodeList');
+            if (!list) return;
+
+            const codeValue = (typeof code === 'string') ? code
+                            : (code && typeof code === 'object' && code.code) ? code.code
+                            : '';
+
+            const row = document.createElement('div');
+            row.className = 'isic-row';
+            row.innerHTML = `
+                <input type="text" class="isic-code-input" list="isicDatalist"
+                       value="${codeValue}"
+                       placeholder="Type or select ISIC code (e.g. C251114)..."
+                       oninput="validatePercentage()">
+                <button type="button" class="remove-isic-btn" onclick="removeIsicRow(this)" title="Remove this code">×</button>
+            `;
+            list.appendChild(row);
+            validatePercentage();
+        }
+
+        /** Remove an ISIC row. Always keeps at least one row (clears it instead). */
+        function removeIsicRow(btn) {
+            const row = btn.closest('.isic-row');
+            const list = document.getElementById('isicCodeList');
+            if (!list || !row) return;
+            if (list.children.length > 1) {
+                row.remove();
+            } else {
+                row.querySelector('.isic-code-input').value = '';
+            }
+            validatePercentage();
+        }
+
+        // ── OTP Panel helpers ─────────────────────────────────────────────────
+
+        /**
+         * Reveal the OTP panel and optionally expose the Saudi Mobile OTP row.
+         * @param {'email'|'mobile'} type  Which OTP type just became active.
+         */
+        function showOtpPanel(type) {
+            const panel = document.getElementById('otpPanel');
+            if (!panel) return;
+
+            panel.style.display = 'flex';
+
+            // Always ensure the email row is visible
+            document.getElementById('emailOtpRow').style.display = 'flex';
+
+            // Show the mobile row only when it is Saudi Arabia AND the type requested is mobile
+            if (type === 'mobile') {
+                const country = document.getElementById('country') ? document.getElementById('country').value : '';
+                if (country === 'Saudi Arabia') {
+                    document.getElementById('mobileOtpRow').style.display = 'flex';
+                }
+            }
+
+            // Smooth-scroll the panel into view
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        let failuresPollTimer = null;
+
+        async function refreshFailures() {
+            try {
+                const res = await fetch('/api/failures');
+                const data = await res.json();
+                const list = document.getElementById('failuresList');
+                const panel = document.getElementById('failuresPanel');
+                if (!list || !panel) return;
+                const entries = data.entries || [];
+                if (entries.length === 0) {
+                    panel.classList.remove('visible');
+                    list.innerHTML = '';
+                    return;
+                }
+                panel.classList.add('visible');
+                list.innerHTML = entries.slice(-10).reverse().map(e =>
+                    `<li><strong>${e.section || '?'}</strong> — ${e.type || ''} "${e.label || e.placeholder || e.valueKey || '?'}" <span style="opacity:0.7">${(e.ts || '').slice(11,19)}</span></li>`
+                ).join('');
+            } catch (_) {}
+        }
+
+        async function clearFailures() {
+            await fetch('/api/failures/clear', { method: 'POST' });
+            document.getElementById('failuresPanel')?.classList.remove('visible');
+            const list = document.getElementById('failuresList');
+            if (list) list.innerHTML = '';
+        }
+
+        function startFailuresPoll() {
+            stopFailuresPoll();
+            failuresPollTimer = setInterval(refreshFailures, 4000);
+            refreshFailures();
+        }
+
+        function stopFailuresPoll() {
+            if (failuresPollTimer) { clearInterval(failuresPollTimer); failuresPollTimer = null; }
+        }
+
+        /**
+         * Wrong OTP on MISA — re-enable dashboard field so operator can type a new code.
+         * @param {'email'|'mobile'} type
+         * @param {string} [message]
+         */
+        function resetOtpField(type, message) {
+            const isEmail = type === 'email';
+            const inputId  = isEmail ? 'emailOtpInput'  : 'mobileOtpInput';
+            const btnId    = isEmail ? 'emailOtpBtn'    : 'mobileOtpBtn';
+            const statusId = isEmail ? 'emailOtpStatus' : 'mobileOtpStatus';
+
+            showOtpPanel(type);
+
+            const input    = document.getElementById(inputId);
+            const btn      = document.getElementById(btnId);
+            const statusEl = document.getElementById(statusId);
+
+            if (input) {
+                input.value = '';
+                input.disabled = false;
+                input.focus();
+            }
+            if (btn) btn.disabled = false;
+            if (statusEl) {
+                statusEl.textContent = message || '✗ Wrong OTP — enter the new code from your email/SMS and submit again.';
+                statusEl.className = 'otp-field-status otp-error';
+            }
+
+            const panel = document.getElementById('otpPanel');
+            if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        /** Hide and fully reset the OTP panel (called at start of new run & on completion). */
+        function hideOtpPanel() {
+            const panel = document.getElementById('otpPanel');
+            if (!panel) return;
+            panel.style.display = 'none';
+
+            // Reset email OTP
+            const emailIn  = document.getElementById('emailOtpInput');
+            const emailBtn = document.getElementById('emailOtpBtn');
+            const emailSt  = document.getElementById('emailOtpStatus');
+            if (emailIn)  { emailIn.value = ''; emailIn.disabled = false; }
+            if (emailBtn) emailBtn.disabled = false;
+            if (emailSt)  { emailSt.textContent = ''; emailSt.className = 'otp-field-status'; }
+
+            // Reset mobile OTP
+            const mobIn  = document.getElementById('mobileOtpInput');
+            const mobBtn = document.getElementById('mobileOtpBtn');
+            const mobSt  = document.getElementById('mobileOtpStatus');
+            if (mobIn)  { mobIn.value = ''; mobIn.disabled = false; }
+            if (mobBtn) mobBtn.disabled = false;
+            if (mobSt)  { mobSt.textContent = ''; mobSt.className = 'otp-field-status'; }
+
+            // Always hide mobile row until explicitly shown
+            document.getElementById('mobileOtpRow').style.display = 'none';
+        }
+
+        /**
+         * Submit a typed OTP to the server so the Playwright worker can pick it up.
+         * @param {'email'|'mobile'} type
+         */
+        async function submitOtp(type) {
+            const isEmail   = type === 'email';
+            const inputId   = isEmail ? 'emailOtpInput'   : 'mobileOtpInput';
+            const btnId     = isEmail ? 'emailOtpBtn'     : 'mobileOtpBtn';
+            const statusId  = isEmail ? 'emailOtpStatus'  : 'mobileOtpStatus';
+
+            const input     = document.getElementById(inputId);
+            const btn       = document.getElementById(btnId);
+            const statusEl  = document.getElementById(statusId);
+
+            const otp = input ? input.value.trim() : '';
+
+            // Basic client-side guard
+            if (!otp || otp.length < 4) {
+                if (statusEl) {
+                    statusEl.textContent = '⚠ Please enter a valid OTP code (min 4 digits).';
+                    statusEl.className = 'otp-field-status otp-error';
+                }
+                return;
+            }
+
+            if (btn) btn.disabled = true;
+            if (statusEl) {
+                statusEl.textContent = '⏳ Sending to automation worker…';
+                statusEl.className = 'otp-field-status';
+            }
+
+            try {
+                const resp = await fetch('/api/otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, otp, runId: currentRunId })
+                });
+                const data = await resp.json();
+
+                if (data.success) {
+                    if (input)  input.disabled = true;
+                    if (statusEl) {
+                        statusEl.textContent = '✓ OTP submitted — automation will resume in a moment.';
+                        statusEl.className = 'otp-field-status';
+                    }
+                } else {
+                    throw new Error(data.error || 'Server returned failure.');
+                }
+            } catch (err) {
+                if (btn) btn.disabled = false;  // allow retry
+                if (statusEl) {
+                    statusEl.textContent = '✗ Failed to submit: ' + err.message;
+                    statusEl.className = 'otp-field-status otp-error';
+                }
+            }
+        }
+
+        // ── Main automation launcher ──────────────────────────────────────────
+        // Send POST payload to start backend automation and read dynamic stream logs
+        let currentRunId = null; // tracks the run currently streaming to this tab
+
+        async function startAutomation() {
+            const runBtn = document.getElementById('runBtn');
+            const terminal = document.getElementById('terminal');
+            const statusDot = document.getElementById('statusDot');
+
+            // Collect all inputs, embedding base64 data for uploaded files
+            const payload = {
+                regTitle: document.getElementById('regTitle').value,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                nationalId: document.getElementById('nationalId').value,
+                companyName: document.getElementById('companyName').value,
+                sector: document.getElementById('sector').value,
+                targetEmail: document.getElementById('targetEmail').value,
+                country: document.getElementById('country').value,
+                regMobilePrefix: document.getElementById('regMobilePrefix') ? document.getElementById('regMobilePrefix').value : '',
+                regMobile: document.getElementById('regMobile').value,
+                
+                credsUsername: document.getElementById('credsUsername').value,
+                credsPassword: document.getElementById('credsPassword').value,
+
+                entityNameEnglish: document.getElementById('entityNameEnglish').value,
+                entityNameArabic: document.getElementById('entityNameArabic').value,
+                legalStatus: document.getElementById('legalStatus').value,
+                capital: document.getElementById('capital').value,
+                region: document.getElementById('region').value,
+                city: document.getElementById('city').value,
+                investmentSpending: document.getElementById('investmentSpending').value,
+                isicCodes: Array.from(document.querySelectorAll('.isic-code-input'))
+                              .map(el => el.value.trim())
+                              .filter(v => v !== ''),
+                entityEmail: document.getElementById('entityEmail').value,
+                entityMobilePrefix: document.getElementById('entityMobilePrefix').value,
+                entityMobile: document.getElementById('entityMobile').value,
+
+                // Step 7 Contact Person Profile
+                contactTitle: document.getElementById('contactTitle').value,
+                contactFullNameEn: document.getElementById('contactFullNameEn').value,
+                contactFirstNameAr: document.getElementById('contactFirstNameAr').value,
+                contactLastNameAr: document.getElementById('contactLastNameAr').value,
+                contactNationality: document.getElementById('contactNationality').value,
+                contactPassportNumber: document.getElementById('contactPassportNumber').value,
+                contactDobDay: document.getElementById('contactDobDay').value,
+                contactDobMonth: document.getElementById('contactDobMonth').value,
+                contactDobYear: document.getElementById('contactDobYear').value,
+                contactIssueDay: document.getElementById('contactIssueDay').value,
+                contactIssueMonth: document.getElementById('contactIssueMonth').value,
+                contactIssueYear: document.getElementById('contactIssueYear').value,
+                contactExpiryDay: document.getElementById('contactExpiryDay').value,
+                contactExpiryMonth: document.getElementById('contactExpiryMonth').value,
+                contactExpiryYear: document.getElementById('contactExpiryYear').value,
+                contactCountry: document.getElementById('contactCountry').value,
+                contactCity: document.getElementById('contactCity').value,
+                contactMobilePrefix: document.getElementById('contactMobilePrefix').value,
+                contactMobile: document.getElementById('contactMobile').value,
+                contactEmail: document.getElementById('contactEmail').value,
+
+                // Entity PDF base64 payloads
+                entityCRFile: fileCache['entityCRFile'] || '',
+                entityFSFile: fileCache['entityFSFile'] || '',
+
+                shareholders: [],
+                _runId: Date.now().toString()  // unique ID for this run's isolated files
+            };
+
+            const shCards = document.querySelectorAll('.shareholder-card');
+            shCards.forEach((card, idx) => {
+                const index  = idx + 1;
+                const shType = (card.querySelector('.sh-type-val') || {}).value || 'Organization';
+                const g = (cls, fallback = '') => { const el = card.querySelector(cls); return el ? el.value.trim() : fallback; };
+                // Active percentage input (both sections contain one; grab the visible/non-empty one)
+                const pctEl  = Array.from(card.querySelectorAll('.sh-pct-input')).find(e => e.offsetParent !== null) || card.querySelector('.sh-pct-input');
+                const pct    = pctEl ? pctEl.value : '';
+
+                if (shType === 'Person') {
+                    payload.shareholders.push({
+                        type:            'Person',
+                        percentage:      pct,
+                        title:           g('.sh-p-title'),
+                        firstNameAr:     g('.sh-p-first-ar'),
+                        lastNameAr:      g('.sh-p-last-ar'),
+                        fullNameEn:      g('.sh-p-full-en'),
+                        passportNumber:  g('.sh-p-passport'),
+                        nationality:     g('.sh-p-nationality'),
+                        country:         g('.sh-p-country'),
+                        city:            g('.sh-p-city'),
+                        professionalLicense: g('.sh-p-prof-license'),
+                        placeOfBirth:    g('.sh-p-place-birth'),
+                        email:           g('.sh-p-email'),
+                        mobilePrefix:    g('.sh-p-mob-prefix'),
+                        mobile:          g('.sh-p-mob'),
+                        dobDay:          g('.sh-p-dob-d'),
+                        dobMonth:        g('.sh-p-dob-m'),
+                        dobYear:         g('.sh-p-dob-y'),
+                        dobCalendar:     g('.sh-p-dob-cal'),
+                        issueDay:        g('.sh-p-iss-d'),
+                        issueMonth:      g('.sh-p-iss-m'),
+                        issueYear:       g('.sh-p-iss-y'),
+                        issueCalendar:   g('.sh-p-iss-cal'),
+                        expiryDay:       g('.sh-p-exp-d'),
+                        expiryMonth:     g('.sh-p-exp-m'),
+                        expiryYear:      g('.sh-p-exp-y'),
+                        expiryCalendar:  g('.sh-p-exp-cal'),
+                        passportFile:    fileCache[`sh_${index}_passport`] || ''
+                    });
+                } else {
+                    payload.shareholders.push({
+                        type:         'Organization',
+                        percentage:   pct,
+                        nameEng:      g('.sh-name-eng'),
+                        nameAr:       g('.sh-name-ar'),
+                        country:      g('.sh-country'),
+                        unifiedNumber:g('.sh-unified'),
+                        legalStatus:  g('.sh-legal'),
+                        years:        g('.sh-years'),
+                        email:        g('.sh-email'),
+                        mobilePrefix: g('.sh-mob-prefix'),
+                        mobile:       g('.sh-mob'),
+                        website:      g('.sh-web'),
+                        crFile:       fileCache[`sh_${index}_cr`]     || '',
+                        fsFile:       fileCache[`sh_${index}_fs`]     || '',
+                        other1File:   fileCache[`sh_${index}_other1`] || '',
+                        other2File:   fileCache[`sh_${index}_other2`] || ''
+                    });
+                }
+            });
+
+            // UI Feedback
+            runBtn.disabled = true;
+            statusDot.className = 'status-dot status-running';
+            terminal.innerHTML = 'Uploading files & connecting to automation runner...\n';
+            hideOtpPanel(); // Reset any leftover OTP state from previous run
+            clearFailures();
+            startFailuresPoll();
+
+            try {
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.body) {
+                    terminal.innerHTML += '\nError: Failed to obtain logs reader.\n';
+                    statusDot.className = 'status-dot';
+                    runBtn.disabled = false;
+                    return;
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunkText = decoder.decode(value);
+
+                    // Extract and hide the RUN_ID header line — not shown in terminal
+                    let displayText = chunkText;
+                    const runIdMatch = chunkText.match(/RUN_ID:(\S+)/);
+                    if (runIdMatch) {
+                        currentRunId = runIdMatch[1];
+                        displayText = chunkText.replace(/RUN_ID:\S+\n?/, '');
+                    }
+
+                    terminal.innerHTML += displayText;
+
+                    // Keep terminal scrolled to bottom
+                    terminal.scrollTop = terminal.scrollHeight;
+
+                    // ── OTP panel auto-reveal ────────────────────────────────
+                    // These keywords are emitted by the handleOtpFlow() helper
+                    // inside misa.spec.js when each OTP polling loop starts.
+                    if (
+                        chunkText.includes('OTP HANDLER [email]') ||
+                        chunkText.includes('Email OTP flow') ||
+                        chunkText.includes('Starting Email OTP')
+                    ) {
+                        showOtpPanel('email');
+                    }
+                    if (
+                        chunkText.includes('OTP HANDLER [mobile]') ||
+                        chunkText.includes('Mobile OTP flow') ||
+                        chunkText.includes('Starting Mobile OTP') ||
+                        chunkText.includes('Verify Mobile OTP')
+                    ) {
+                        showOtpPanel('mobile');
+                    }
+
+                    if (chunkText.includes('OTP DASHBOARD: RESET email')) {
+                        resetOtpField('email');
+                    }
+                    if (chunkText.includes('OTP DASHBOARD: RESET mobile')) {
+                        resetOtpField('mobile');
+                    }
+                    if (/OTP HANDLER \[email\]: ❌ rejected/i.test(chunkText)) {
+                        const errLine = chunkText.match(/rejected — (.+)/);
+                        resetOtpField('email', errLine
+                            ? `✗ Wrong OTP (${errLine[1].trim().slice(0, 80)}) — enter the new code and submit again.`
+                            : undefined);
+                    }
+                    if (/OTP HANDLER \[mobile\]: ❌ rejected/i.test(chunkText)) {
+                        const errLine = chunkText.match(/rejected — (.+)/);
+                        resetOtpField('mobile', errLine
+                            ? `✗ Wrong OTP (${errLine[1].trim().slice(0, 80)}) — enter the new code and submit again.`
+                            : undefined);
+                    }
+                    if (chunkText.includes('OTP DASHBOARD: ACCEPTED email')) {
+                        const emailSt = document.getElementById('emailOtpStatus');
+                        if (emailSt) {
+                            emailSt.textContent = '✓ Email verified — automation continuing…';
+                            emailSt.className = 'otp-field-status';
+                        }
+                    }
+                    if (chunkText.includes('[AI-AGENT]') || chunkText.includes('AI agent recovery ENABLED')) {
+                        refreshFailures();
+                    }
+                    if (chunkText.includes('OTP DASHBOARD: ACCEPTED mobile')) {
+                        const mobSt = document.getElementById('mobileOtpStatus');
+                        if (mobSt) {
+                            mobSt.textContent = '✓ Mobile verified — automation continuing…';
+                            mobSt.className = 'otp-field-status';
+                        }
+                    }
+
+                    if (chunkText.includes('[AI-FALLBACK]') || chunkText.includes('AI Help Needed')) {
+                        refreshFailures();
+                    }
+
+                    // Hide the panel after successful completion
+                    if (
+                        chunkText.includes('\uD83C\uDFC6') ||  // 🏆 trophy
+                        chunkText.includes('completed successfully') ||
+                        chunkText.includes('Automation successfully completed')
+                    ) {
+                        setTimeout(hideOtpPanel, 5000);
+                    }
+                }
+
+            } catch (err) {
+                terminal.innerHTML += `\n[NETWORK ERROR] Could not connect to automation: ${err.message}\n`;
+            } finally {
+                statusDot.className = 'status-dot';
+                runBtn.disabled = false;
+                stopFailuresPoll();
+                refreshFailures();
+                hideOtpPanel();          // always hide OTP panel when run ends or is stopped
+                currentRunId = null;
+                terminal.innerHTML += '<span class="caret"></span>';
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>

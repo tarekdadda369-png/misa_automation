@@ -1,0 +1,31 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploy: connect GitHub repo → New Blueprint → select render.yaml
+
+services:
+  - type: web
+    name: misa-automation-runner
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: standard
+    healthCheckPath: /api/v1/health
+    numInstances: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PRODUCTION_MODE
+        value: "1"
+      - key: PLAYWRIGHT_HEADLESS
+        value: "1"
+      - key: MAX_CONCURRENT_RUNS
+        value: "1"
+      - key: PORT
+        value: "3050"
+      - key: RUN_AI_FALLBACK
+        value: "1"
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: AI_FALLBACK_MODEL
+        value: gpt-4o
+      - key: CORS_ORIGIN
+        sync: false
