@@ -1,5 +1,7 @@
 # MISA automation runner
 
+<!-- deploy: 2026-05-24 clientId + runId UI -->
+
 Playwright automation for Invest Saudi (MISA) registration. Exposes an HTTP API so your company dashboard can start runs, poll status, and submit OTP codes.
 
 ## Docs

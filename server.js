@@ -200,7 +200,7 @@ const server = http.createServer(async (req, res) => {
         jsonResponse(res, 200, {
             ok: true,
             service: 'misa-automation-runner',
-            version: '1.0.0',
+            version: '1.0.1',
             uptime: process.uptime(),
             headless: useHeadless(),
             ...getQueueStats(jobs),
