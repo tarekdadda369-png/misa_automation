@@ -243,14 +243,22 @@ const server = http.createServer(async (req, res) => {
         }
         try {
             const configData = await readBody(req);
-            const { runId, configFileName, clientId } = prepareRunConfig(configData, PROJECT_ROOT);
-            const job = createJob(runId, { clientId });
+            const clientIdRaw = configData._clientId || configData.clientId;
+            const clientId = clientIdRaw != null ? String(clientIdRaw).trim() : '';
+            if (!clientId) {
+                jsonResponse(res, 400, {
+                    error: 'clientId is required. Send "_clientId" or "clientId" in the JSON body (your company client record ID).',
+                });
+                return;
+            }
+            const { runId, configFileName, clientId: preparedClientId } = prepareRunConfig(configData, PROJECT_ROOT);
+            const job = createJob(runId, { clientId: preparedClientId });
             const queue = enqueueAndRespond(job, configFileName, null);
 
             jsonResponse(res, 202, {
                 success: true,
                 runId,
-                clientId,
+                clientId: preparedClientId,
                 phase: queue.phase,
                 queuePosition: queue.queuePosition,
                 maxConcurrentRuns: queue.maxConcurrentRuns,

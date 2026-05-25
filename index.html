@@ -891,6 +891,11 @@
             <div class="section-card">
                 <h2>Lead Details (Step 1 Registration)</h2>
                 <div class="form-grid">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="clientId">Client ID (رقم العميل عندكم) <span class="required-asterisk">*</span></label>
+                        <input type="text" id="clientId" placeholder="e.g. 4521 — same ID as your company CRM" required>
+                        <small style="color: var(--text-muted, #888);">Sent as <code>_clientId</code> — links this run to the employee&apos;s client record.</small>
+                    </div>
                     <div class="form-group">
                         <label for="regTitle">Title <span class="required-asterisk">*</span></label>
                         <select id="regTitle">
@@ -3015,7 +3020,14 @@
             const statusDot = document.getElementById('statusDot');
 
             // Collect all inputs, embedding base64 data for uploaded files
+            const clientId = (document.getElementById('clientId').value || '').trim();
+            if (!clientId) {
+                alert('Client ID is required — enter your company client number first.');
+                return;
+            }
+
             const payload = {
+                _clientId: clientId,
                 regTitle: document.getElementById('regTitle').value,
                 firstName: document.getElementById('firstName').value,
                 lastName: document.getElementById('lastName').value,

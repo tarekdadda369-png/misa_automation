@@ -41,10 +41,13 @@ Content-Type: application/json
 
 **Body:** same JSON as our internal dashboard. See [api/run-payload.example.json](./api/run-payload.example.json).
 
-Optional fields:
+Required:
+
+- **`"_clientId"`** (or `"clientId"`) — **your company client record ID** (employee selects client first). Returned in every status response.
+
+Optional:
 
 - `"_runId": "unique-id"` — correlate in logs  
-- `"_clientId": "client-1"` — label client 1 / 2 / 3 in status API  
 
 ### Multiple clients at the same time (production)
 
