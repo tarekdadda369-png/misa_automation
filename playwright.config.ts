@@ -37,12 +37,11 @@ export default defineConfig({
   reporter: 'list',
   use: {
     headless,
+    proxy: process.env.SAUDI_PROXY ? { server: process.env.SAUDI_PROXY } : undefined,
     launchOptions: {
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
       ],
     },
     video: 'on',               // Record video for all test runs

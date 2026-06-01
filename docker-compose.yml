@@ -7,13 +7,12 @@ services:
       - .env
     environment:
       NODE_ENV: production
-      PRODUCTION_MODE: "1"
-      PLAYWRIGHT_HEADLESS: "1"
+      PLAYWRIGHT_HEADLESS: "0"
       MAX_CONCURRENT_RUNS: "3"
       PORT: "3050"
     volumes:
       - ./uploads:/app/uploads
       - ./logs:/app/logs
-      # After first run: docker cp misa-runner:/app/server-config.json ./server-config.json
+      - ./browser_profiles:/app/browser_profiles
     restart: unless-stopped
     shm_size: "2gb"
